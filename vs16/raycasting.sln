@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "raycasting", "raycasting.vcxproj", "{6BD6F76C-F580-4C65-BCD8-9FEEE2FB8204}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6BD6F76C-F580-4C65-BCD8-9FEEE2FB8204}.Debug|x64.ActiveCfg = Debug|x64
+		{6BD6F76C-F580-4C65-BCD8-9FEEE2FB8204}.Debug|x64.Build.0 = Debug|x64
+		{6BD6F76C-F580-4C65-BCD8-9FEEE2FB8204}.Release|x64.ActiveCfg = Release|x64
+		{6BD6F76C-F580-4C65-BCD8-9FEEE2FB8204}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {381A8413-2CBE-4948-9768-AD343DAF6235}
+	EndGlobalSection
+EndGlobal
