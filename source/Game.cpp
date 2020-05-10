@@ -88,12 +88,14 @@ void Game::MovePlayer(float deltaTime)
 
 void Game::Update()
 {
-    while (!SDL_TICKS_PASSED(SDL_GetTicks(), m_ticksLastFrame + FRAME_TIME_LENGTH)) {};
-
     const auto deltaTime = (SDL_GetTicks() - m_ticksLastFrame) / 1000.0f;
-
     m_ticksLastFrame = SDL_GetTicks();
 
     MovePlayer(deltaTime);
     m_raycaster->CastRays(m_player, m_maze, m_rays);
+}
+
+void Game::Delay(float time)
+{
+    SDL_Delay(time);
 }

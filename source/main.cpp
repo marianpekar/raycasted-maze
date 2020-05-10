@@ -1,6 +1,3 @@
-#include <iostream>
-#include <ctime>
-#include <SDL.h>
 #include "Game.h"
 #include "Renderer.h"
 #include "Window.h"
@@ -16,10 +13,11 @@ int main(int argc, char* args[]) {
 
     game->Setup();
 	
-    while (game->m_isGameRunning) {
+    while (game->m_isGameRunning) {    	
         game->ProcessInput();
         game->Update();
         renderer->Render(game->m_player, game->m_maze, game->m_rays, game->m_surfaces);
+        game->Delay(FRAME_TIME_LENGTH);
     }
 	
     delete renderer;

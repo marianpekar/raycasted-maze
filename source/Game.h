@@ -14,6 +14,7 @@ public:
 	void ProcessInput();
 	void MovePlayer(float deltaTime);
 	void Update();
+	void Delay(float time);
 	
 	float m_startX;
 	float m_startY;

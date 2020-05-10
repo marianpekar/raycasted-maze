@@ -22,7 +22,7 @@ constexpr auto TEXTURE_HEIGHT = 64;
 constexpr auto FOV_ANGLE = (60 * PI / 180);
 constexpr auto NUM_RAYS = WINDOW_WIDTH;
 
-constexpr auto FPS = 60;
+constexpr auto FPS = 144;
 constexpr auto FRAME_TIME_LENGTH = (1000 / FPS);
 
 constexpr auto REDBRICK_TEXTURE_FILEPATH = "../source/images/redbrick.png";
