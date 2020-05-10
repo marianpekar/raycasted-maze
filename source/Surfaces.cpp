@@ -2,20 +2,19 @@
 
 Surfaces::Surfaces()
 {
-    m_wallSurfaces[1] = LoadSurface(REDBRICK_TEXTURE_FILEPATH);
-    m_wallSurfaces[2] = LoadSurface(PURPLESTONE_TEXTURE_FILEPATH);
-    m_wallSurfaces[3] = LoadSurface(MOSSYSTONE_TEXTURE_FILEPATH);
-    m_wallSurfaces[4] = LoadSurface(GRAYSTONE_TEXTURE_FILEPATH);
-    m_wallSurfaces[5] = LoadSurface(COLORSTONE_TEXTURE_FILEPATH);
-    m_wallSurfaces[6] = LoadSurface(BLUESTONE_TEXTURE_FILEPATH);
-    m_wallSurfaces[7] = LoadSurface(WOOD_TEXTURE_FILEPATH);
-    m_wallSurfaces[8] = LoadSurface(EAGLE_TEXTURE_FILEPATH);
+    m_textures[1] = LoadPixels(REDBRICK_TEXTURE_FILEPATH);
+    m_textures[2] = LoadPixels(PURPLESTONE_TEXTURE_FILEPATH);
+    m_textures[3] = LoadPixels(MOSSYSTONE_TEXTURE_FILEPATH);
+    m_textures[4] = LoadPixels(GRAYSTONE_TEXTURE_FILEPATH);
+    m_textures[5] = LoadPixels(COLORSTONE_TEXTURE_FILEPATH);
+    m_textures[6] = LoadPixels(BLUESTONE_TEXTURE_FILEPATH);
+    m_textures[7] = LoadPixels(WOOD_TEXTURE_FILEPATH);
+    m_textures[8] = LoadPixels(EAGLE_TEXTURE_FILEPATH);
 }
 
-uint32_t Surfaces::GetTexel(SDL_Surface* surface, int x, int y)
+uint32_t Surfaces::GetPixel(uint32_t* pixels, int x, int y)
 {
-	auto pixels = static_cast<uint32_t*>(surface->pixels);
-    return pixels[(y * surface->w) + x];
+    return pixels[(y * TEXTURE_WIDTH) + x];
 }
 
 
@@ -30,8 +29,10 @@ int Surfaces::Darken(int color, float amount)
     return (a << 24) | (r << 16) | (g << 8) | b;
 }
 
-SDL_Surface* Surfaces::LoadSurface(const char* filePath)
+uint32_t* Surfaces::LoadPixels(const char* filePath)
 {
     auto image = IMG_Load(filePath);
-    return image;
+    auto pixels = static_cast<uint32_t*>(image->pixels);
+	
+    return pixels;
 }

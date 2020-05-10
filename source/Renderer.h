@@ -21,7 +21,7 @@ private:
 	void RenderPlayer(Player* player) const;
 	void RenderMinimap(Maze* maze) const;
 	void RenderRays(Player* player, Ray rays[]) const;
-	void CleanColorBuffer(Uint32 color) const;
+	void CleanColorBuffer(uint32_t color) const;
 	void RenderColorBuffer() const;
 	void RenderProjection(Player* player, Ray rays[], Surfaces* surfaces) const;
 };

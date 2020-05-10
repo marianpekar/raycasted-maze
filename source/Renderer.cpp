@@ -41,8 +41,8 @@ void Renderer::RenderPlayer(Player* player) const
         m_renderer,
         MINIMAP_SCALE_FACTOR * player->m_x,
         MINIMAP_SCALE_FACTOR * player->m_y,
-        MINIMAP_SCALE_FACTOR * player->m_x + cos(player->m_rotationAngle) * 2,
-        MINIMAP_SCALE_FACTOR * player->m_y + sin(player->m_rotationAngle) * 2
+        MINIMAP_SCALE_FACTOR * player->m_x + static_cast<float>(cos(player->m_rotationAngle)) * 2,
+        MINIMAP_SCALE_FACTOR * player->m_y + static_cast<float>(sin(player->m_rotationAngle)) * 2
     );
 }
 
@@ -69,7 +69,7 @@ void Renderer::RenderMinimap(Maze* maze) const
 void Renderer::RenderRays(Player* player, Ray rays[]) const
 {
     SDL_SetRenderDrawColor(m_renderer, 255, 0, 0, 128);
-    for (int i = 0; i < NUM_RAYS; i++) {
+    for (auto i = 0; i < NUM_RAYS; i++) {
         SDL_RenderDrawLine(
             m_renderer,
             MINIMAP_SCALE_FACTOR * player->m_x,
@@ -80,7 +80,7 @@ void Renderer::RenderRays(Player* player, Ray rays[]) const
     }
 }
 
-void Renderer::CleanColorBuffer(Uint32 color) const
+void Renderer::CleanColorBuffer(uint32_t color) const
 {
     for (auto x = 0; x < WINDOW_WIDTH; x++) {
         for (auto y = 0; y < WINDOW_HEIGHT; y++) {
@@ -95,27 +95,27 @@ void Renderer::RenderColorBuffer() const
         m_colorBufferTexture,
         nullptr,
         m_colorBuffer,
-        (int)((Uint32)WINDOW_WIDTH * sizeof(Uint32))
+        static_cast<int>(static_cast<uint32_t>(WINDOW_WIDTH) * sizeof(uint32_t))
     );
     SDL_RenderCopy(m_renderer, m_colorBufferTexture, nullptr, nullptr);
 }
 
 void Renderer::RenderProjection(Player* player, Ray rays[], Surfaces* surfaces) const
 {
-    for (int i = 0; i < NUM_RAYS; i++) {
-        float perpendicularDistance = rays[i].m_distance * cos(rays[i].m_rayAngle - player->m_rotationAngle);
-        float distanceToProjectionPlane = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
-        float projectedWallHeight = (TILE_SIZE / perpendicularDistance) * distanceToProjectionPlane;
+    for (auto i = 0; i < NUM_RAYS; i++) {
+	    const auto perpendicularDistance = rays[i].m_distance * cos(rays[i].m_rayAngle - player->m_rotationAngle);
+	    const float distanceToProjectionPlane = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
+	    const float projectedWallHeight = (TILE_SIZE / perpendicularDistance) * distanceToProjectionPlane;
 
-        int wallStripHeight = (int)projectedWallHeight;
+	    const auto wallStripHeight = static_cast<int>(projectedWallHeight);
 
-        int wallTopPixel = (WINDOW_HEIGHT / 2) - (wallStripHeight / 2);
+        auto wallTopPixel = (WINDOW_HEIGHT / 2) - (wallStripHeight / 2);
         wallTopPixel = wallTopPixel < 0 ? 0 : wallTopPixel;
 
-        int wallBottomPixel = (WINDOW_HEIGHT / 2) + (wallStripHeight / 2);
+        auto wallBottomPixel = (WINDOW_HEIGHT / 2) + (wallStripHeight / 2);
         wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
 
-        for (int ceilingPixel = 1; ceilingPixel < wallTopPixel; ceilingPixel++) {
+        for (auto ceilingPixel = 1; ceilingPixel < wallTopPixel; ceilingPixel++) {
             m_colorBuffer[(WINDOW_WIDTH * ceilingPixel) + i] = 0xFF484848;
         }
 
@@ -124,21 +124,16 @@ void Renderer::RenderProjection(Player* player, Ray rays[], Surfaces* surfaces) 
         const auto surfaceOffsetX = rays[i].m_wasHitVertical ? static_cast<int>(rays[i].m_wallHitY) % TILE_SIZE : static_cast<int>(rays[i].m_wallHitX) % TILE_SIZE;;
 
         for (auto y = wallTopPixel; y < wallBottomPixel; y++) {
-            auto distanceFromTop = (y + (wallStripHeight / 2) - (WINDOW_HEIGHT / 2));
-            auto surfaceOffetY = distanceFromTop * (static_cast<float>(TEXTURE_HEIGHT) / wallStripHeight);
+	        const auto distanceFromTop = (y + (wallStripHeight / 2) - (WINDOW_HEIGHT / 2));
+            const auto surfaceOffetY = distanceFromTop * (static_cast<float>(TEXTURE_HEIGHT) / wallStripHeight);
 
-            // set the color of the wall based on the color from the texture
-            auto surface = surfaces->m_wallSurfaces[surfaceId];
-            SDL_LockSurface(surface);
-
-            uint32_t texel = Surfaces::GetTexel(surface, surfaceOffsetX, surfaceOffetY);
-
-            SDL_UnlockSurface(surface);
-
+	        const auto texels = surfaces->m_textures[surfaceId];
+	        const auto texel = Surfaces::GetPixel(texels, surfaceOffsetX, surfaceOffetY);
+        	
             m_colorBuffer[(WINDOW_WIDTH * y) + i] = rays[i].m_wasHitVertical ? Surfaces::Darken(texel, 0.5f) : texel;
         }
 
-        for (int floorPixel = wallBottomPixel; floorPixel < WINDOW_HEIGHT; floorPixel++) {
+        for (auto floorPixel = wallBottomPixel; floorPixel < WINDOW_HEIGHT; floorPixel++) {
             m_colorBuffer[(WINDOW_WIDTH * floorPixel) + i] = 0xFF808080;
         }
     }

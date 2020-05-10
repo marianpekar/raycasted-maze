@@ -7,10 +7,10 @@ class Surfaces
 {
 public:
 	Surfaces();
-	SDL_Surface* m_wallSurfaces[NUM_TEXTURES + 1];
-	static uint32_t GetTexel(SDL_Surface* surface, int x, int y);
+	uint32_t* m_textures[NUM_TEXTURES + 1];
+	static uint32_t GetPixel(uint32_t* texels, int x, int y);
 	static int Darken(int color, float amount);
 private:
-	static SDL_Surface* LoadSurface(const char* filePath);
+	static uint32_t* LoadPixels(const char* filePath);
 };
 
