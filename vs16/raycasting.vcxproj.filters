@@ -36,6 +36,9 @@
     <ClCompile Include="../source/Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="../source/PerlinNoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="../source/Constants.h">
@@ -63,6 +66,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="../source/Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="../source/PerlinNoise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -164,6 +164,7 @@
     <ClCompile Include="../source/Renderer.cpp" />
     <ClCompile Include="../source/Surfaces.cpp" />
     <ClCompile Include="../source/Window.cpp" />
+    <ClCompile Include="../source/PerlinNoise.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="../source/Constants.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="../source/Renderer.h" />
     <ClInclude Include="../source/Surfaces.h" />
     <ClInclude Include="../source/Window.h" />
+    <ClInclude Include="../source/PerlinNoise.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
