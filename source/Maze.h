@@ -1,5 +1,9 @@
 #pragma once
 #include <cstdlib>
+#include <ctime>
+#include <iostream>
+
+#include "PerlinNoise.h"
 #include "Constants.h"
 
 class Maze
@@ -12,7 +16,11 @@ public:
 private:
 	int m_startX;
 	int m_startY;
+	PerlinNoise m_perlinNoise = PerlinNoise(false);
 	void GenerateMaze();
 	void Dig(int row, int column);
+	void PaintWalls();
+	void PaintWall(int row, int column);
+	void PrintMazeToConsole(); // just for debugging
 };
 

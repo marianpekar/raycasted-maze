@@ -21,15 +21,14 @@ int Maze::HasWallAt(float x, float y)
 
 void Maze::GenerateMaze()
 {
-    int x, y;
-
-    for (x = 0; x < MAZE_NUM_COLS; x++) {
-        for (y = 0; y < MAZE_NUM_ROWS; y++) {
+	for (auto x = 0; x < MAZE_NUM_COLS; x++) {
+        for (auto y = 0; y < MAZE_NUM_ROWS; y++) {
             m_maze[x][y] = (x == m_startX && y == m_startY) ? 0 : 1;
         }
     }
 
     Dig(m_startX, m_startY);
+    PaintWalls();
 }
 
 void Maze::Dig(int row, int column)
@@ -86,5 +85,39 @@ void Maze::Dig(int row, int column)
             }
             break;
         }
+    }
+}
+
+void Maze::PaintWalls()
+{
+    for (auto x = 0; x < MAZE_NUM_COLS; x++) {
+        for (auto y = 0; y < MAZE_NUM_ROWS; y++) {
+            if (m_maze[x][y] != 0)
+                PaintWall(x, y);      	
+        }
+    }
+
+    PrintMazeToConsole();
+}
+
+void Maze::PaintWall(int row, int column)
+{	
+    auto noiseSample = m_perlinNoise.FractalBrownianMotion(row * 0.0001f, column * 0.0001f, 8, 28);
+    auto noiseRemaped = m_perlinNoise.Remap(noiseSample, -0.33f, 0.33f, 1.0f, NUM_TEXTURES + 1);
+    auto textureId = static_cast<int>(floor(noiseRemaped));
+	
+    m_maze[row][column] = textureId;
+}
+
+void Maze::PrintMazeToConsole()
+{
+    for (auto x = 0; x < MAZE_NUM_COLS; x++) {
+        for (auto y = 0; y < MAZE_NUM_ROWS; y++) {
+            if (m_maze[x][y] == 0)
+                std::cout << "  ";
+            else
+                std::cout << m_maze[x][y] << " ";
+        }
+        std::cout << std::endl;
     }
 }
