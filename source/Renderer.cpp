@@ -130,7 +130,7 @@ void Renderer::RenderProjection(Player* player, Ray rays[], Surfaces* surfaces) 
 	        const auto texels = surfaces->m_textures[surfaceId];
 	        const auto texel = Surfaces::GetPixel(texels, surfaceOffsetX, surfaceOffetY);
         	
-            auto darkenAmount = rays[i].m_wasHitVertical ? perpendicularDistance * 0.002f : 0.3f + perpendicularDistance * 0.002f;
+            auto darkenAmount = rays[i].m_wasHitVertical ? perpendicularDistance * 0.001f : 0.3f + perpendicularDistance * 0.001f;
             if (darkenAmount > 0.6f)
                 darkenAmount = 0.6f;
 
