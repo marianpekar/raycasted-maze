@@ -130,7 +130,11 @@ void Renderer::RenderProjection(Player* player, Ray rays[], Surfaces* surfaces) 
 	        const auto texels = surfaces->m_textures[surfaceId];
 	        const auto texel = Surfaces::GetPixel(texels, surfaceOffsetX, surfaceOffetY);
         	
-            m_colorBuffer[(WINDOW_WIDTH * y) + i] = rays[i].m_wasHitVertical ? Surfaces::Darken(texel, 0.5f) : texel;
+            auto darkenAmount = rays[i].m_wasHitVertical ? perpendicularDistance * 0.002f : 0.3f + perpendicularDistance * 0.002f;
+            if (darkenAmount > 0.6f)
+                darkenAmount = 0.6f;
+
+            m_colorBuffer[(WINDOW_WIDTH * y) + i] = Surfaces::Darken(texel, darkenAmount);
         }
 
         for (auto floorPixel = wallBottomPixel; floorPixel < WINDOW_HEIGHT; floorPixel++) {
