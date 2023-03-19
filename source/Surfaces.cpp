@@ -10,6 +10,16 @@ Surfaces::Surfaces()
     m_textures[6] = LoadPixels(BLUESTONE_TEXTURE_FILEPATH);
     m_textures[7] = LoadPixels(WOOD_TEXTURE_FILEPATH);
     m_textures[8] = LoadPixels(EAGLE_TEXTURE_FILEPATH);
+
+    m_minimapColors[0] = 0xFF000000;
+    m_minimapColors[1] = REDBRICK_TEXTURE_MINIMAP_COLOR;
+    m_minimapColors[2] = PURPLESTONE_TEXTURE_MINIMAP_COLOR;
+    m_minimapColors[3] = MOSSYSTONE_TEXTURE_MINIMAP_COLOR;
+    m_minimapColors[4] = GRAYSTONE_TEXTURE_MINIMAP_COLOR;
+    m_minimapColors[5] = COLORSTONE_TEXTURE_MINIMAP_COLOR;
+    m_minimapColors[6] = BLUESTONE_TEXTURE_MINIMAP_COLOR;
+    m_minimapColors[7] = WOOD_TEXTURE_MINIMAP_COLOR;
+    m_minimapColors[8] = EAGLE_TEXTURE_MINIMAP_COLOR;
 }
 
 uint32_t Surfaces::GetPixel(uint32_t* pixels, int x, int y)

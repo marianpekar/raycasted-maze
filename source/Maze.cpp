@@ -1,11 +1,17 @@
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
 #include "Maze.h"
+#include "PerlinNoise.h"
 
-Maze::Maze()
+Maze::~Maze()
 {
+    delete m_perlinNoise;
 }
 
 Maze::Maze(int startX, int startY) : m_startX(startX), m_startY(startY)
 {
+    m_perlinNoise = new PerlinNoise(false);
 	GenerateMaze();
 }
 
@@ -33,7 +39,7 @@ void Maze::GenerateMaze()
 
 void Maze::Dig(int row, int column)
 {
-    int directions[4];
+    int directions[4]{};
     for (int d = 0; d < 4; d++) {
         directions[d] = rand() % 4;
     }
@@ -102,8 +108,8 @@ void Maze::PaintWalls()
 
 void Maze::PaintWall(int row, int column)
 {	
-    auto noiseSample = m_perlinNoise.FractalBrownianMotion(row * 0.0001f, column * 0.0001f, 8, 28);
-    auto noiseRemaped = m_perlinNoise.Remap(noiseSample, -0.33f, 0.33f, 1.0f, NUM_TEXTURES + 1);
+    auto noiseSample = m_perlinNoise->FractalBrownianMotion(row * FBM_X_SCALE, column * FBM_Y_SCALE, FBM_OCTAVES, FBM_PERSISTENCE);
+    auto noiseRemaped = m_perlinNoise->Remap(noiseSample, -0.33f, 0.33f, 1.0f, NUM_TEXTURES + 1);
     auto textureId = static_cast<int>(floor(noiseRemaped));
 	
     m_maze[row][column] = textureId;

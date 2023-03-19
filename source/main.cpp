@@ -8,7 +8,7 @@ Game* game;
 
 int main(int argc, char* args[]) {
     window = new Window();
-    renderer = new Renderer(window->m_window);
+    renderer = new Renderer(window);
     game = new Game();
 
     game->Setup();
@@ -16,10 +16,11 @@ int main(int argc, char* args[]) {
     while (game->m_isGameRunning) {    	
         game->ProcessInput();
         game->Update();
-        renderer->Render(game->m_player, game->m_maze, game->m_rays, game->m_surfaces);
+        renderer->Render(game);
         game->Delay(FRAME_TIME_LENGTH);
     }
 	
+    delete game;
     delete renderer;
     delete window;
     return 0;

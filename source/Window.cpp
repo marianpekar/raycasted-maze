@@ -1,4 +1,7 @@
+#include <SDL.h>
 #include "Window.h"
+#include <iostream>
+#include "Constants.h"
 
 Window::Window()
 {

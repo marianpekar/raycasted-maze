@@ -1,4 +1,8 @@
+#include <cmath>
 #include "Raycaster.h"
+#include "Player.h"
+#include "Maze.h"
+#include "Ray.h"
 
 void Raycaster::CastRays(Player* player, Maze* maze, Ray rays[NUM_RAYS]) const
 {

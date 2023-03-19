@@ -33,3 +33,20 @@ constexpr auto COLORSTONE_TEXTURE_FILEPATH = "../source/images/colorstone.png";
 constexpr auto BLUESTONE_TEXTURE_FILEPATH = "../source/images/bluestone.png";
 constexpr auto WOOD_TEXTURE_FILEPATH = "../source/images/wood.png";
 constexpr auto EAGLE_TEXTURE_FILEPATH = "../source/images/eagle.png";
+
+constexpr auto REDBRICK_TEXTURE_MINIMAP_COLOR = 0xFF4000;
+constexpr auto PURPLESTONE_TEXTURE_MINIMAP_COLOR = 0x6600FF;
+constexpr auto MOSSYSTONE_TEXTURE_MINIMAP_COLOR = 0x669999;
+constexpr auto GRAYSTONE_TEXTURE_MINIMAP_COLOR = 0xD9D9D9;
+constexpr auto COLORSTONE_TEXTURE_MINIMAP_COLOR = 0xCC6600;
+constexpr auto BLUESTONE_TEXTURE_MINIMAP_COLOR = 0x0033CC;
+constexpr auto WOOD_TEXTURE_MINIMAP_COLOR = 0x996633;
+constexpr auto EAGLE_TEXTURE_MINIMAP_COLOR = 0xCC0099;
+
+constexpr auto CEILING_COLOR = 0xFF484848;
+constexpr auto FLOOR_COLOR = 0xFF808080;
+
+constexpr auto FBM_X_SCALE = 0.0001f;
+constexpr auto FBM_Y_SCALE = 0.0001f;
+constexpr auto FBM_OCTAVES = 8;
+constexpr auto FBM_PERSISTENCE = 28;

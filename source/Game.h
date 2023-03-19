@@ -1,10 +1,7 @@
 #pragma once
 
-#include <ctime>
-#include "Maze.h"
-#include "Player.h"
-#include "Raycaster.h"
-#include "Surfaces.h"
+#include "Constants.h"
+#include "Ray.h"
 
 class Game
 {
@@ -19,10 +16,10 @@ public:
 	float m_startX;
 	float m_startY;
 	
-	Player* m_player;
-	Maze* m_maze;
-	Surfaces* m_surfaces;
-	Raycaster* m_raycaster;
+	class Player* m_player;
+	class Maze* m_maze;
+	class Surfaces* m_surfaces;
+	class Raycaster* m_raycaster;
 	Ray m_rays[NUM_RAYS];
 
 	bool m_isGameRunning;

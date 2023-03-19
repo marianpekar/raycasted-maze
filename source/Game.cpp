@@ -1,5 +1,10 @@
+#include <ctime>
+#include <stdlib.h>
 #include "Game.h"
-
+#include "Maze.h"
+#include "Player.h"
+#include "Raycaster.h"
+#include "Surfaces.h"
 
 Game::~Game()
 {

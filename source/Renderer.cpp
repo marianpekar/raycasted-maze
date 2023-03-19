@@ -1,12 +1,20 @@
+#include <iostream>
 #include "Renderer.h"
+#include "Constants.h"
+#include "Player.h"
+#include "Maze.h"
+#include "Ray.h"
+#include "Surfaces.h"
+#include "Window.h"
+#include "Game.h"
 
-Renderer::Renderer(SDL_Window* window)
+Renderer::Renderer(Window* window)
 {
-    m_renderer = SDL_CreateRenderer(window, -1, 0);
+    m_renderer = SDL_CreateRenderer(window->m_window, -1, 0);
     if (!m_renderer) {
         std::cout << "Error creating SDL renderer" << std::endl;
     }
-	
+
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
 
     m_colorBuffer = static_cast<uint32_t*>(malloc(sizeof(Uint32) * static_cast<Uint32>(WINDOW_WIDTH) * static_cast<Uint32>(WINDOW_HEIGHT)));
@@ -46,15 +54,20 @@ void Renderer::RenderPlayer(Player* player) const
     );
 }
 
-void Renderer::RenderMinimap(Maze* maze) const
+void Renderer::RenderMinimap(Maze* maze, Surfaces* surfaces) const
 {
     for (int i = 0; i < MAZE_NUM_ROWS; i++) {
         for (int j = 0; j < MAZE_NUM_COLS; j++) {
             int tileX = j * TILE_SIZE;
             int tileY = i * TILE_SIZE;
-            int tileColor = maze->m_maze[i][j] != 0 ? 255 : 0;
 
-            SDL_SetRenderDrawColor(m_renderer, tileColor, tileColor, tileColor, 128);
+            uint32_t tileColor = surfaces->m_minimapColors[maze->m_maze[i][j]];
+
+            uint8_t r = (tileColor >> 16) & 0xFF;
+            uint8_t g = (tileColor >> 8) & 0xFF;
+            uint8_t b = tileColor & 0xFF;
+
+            SDL_SetRenderDrawColor(m_renderer, r, g, b, 128);
             SDL_Rect mapTileRect = {
                 tileX * MINIMAP_SCALE_FACTOR,
                 tileY * MINIMAP_SCALE_FACTOR,
@@ -77,15 +90,6 @@ void Renderer::RenderRays(Player* player, Ray rays[]) const
             MINIMAP_SCALE_FACTOR * rays[i].m_wallHitX,
             MINIMAP_SCALE_FACTOR * rays[i].m_wallHitY
         );
-    }
-}
-
-void Renderer::CleanColorBuffer(uint32_t color) const
-{
-    for (auto x = 0; x < WINDOW_WIDTH; x++) {
-        for (auto y = 0; y < WINDOW_HEIGHT; y++) {
-            m_colorBuffer[(WINDOW_WIDTH * y) + x] = color;
-        }
     }
 }
 
@@ -115,8 +119,8 @@ void Renderer::RenderProjection(Player* player, Ray rays[], Surfaces* surfaces) 
         auto wallBottomPixel = (WINDOW_HEIGHT / 2) + (wallStripHeight / 2);
         wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
 
-        for (auto ceilingPixel = 1; ceilingPixel < wallTopPixel; ceilingPixel++) {
-            m_colorBuffer[(WINDOW_WIDTH * ceilingPixel) + i] = 0xFF484848;
+        for (auto ceilingPixel = 0; ceilingPixel <= wallTopPixel; ceilingPixel++) {
+            m_colorBuffer[(WINDOW_WIDTH * ceilingPixel) + i] = CEILING_COLOR;
         }
 
         const auto surfaceId = rays[i].m_wallHitContent;
@@ -138,25 +142,24 @@ void Renderer::RenderProjection(Player* player, Ray rays[], Surfaces* surfaces) 
         }
 
         for (auto floorPixel = wallBottomPixel; floorPixel < WINDOW_HEIGHT; floorPixel++) {
-            m_colorBuffer[(WINDOW_WIDTH * floorPixel) + i] = 0xFF808080;
+            m_colorBuffer[(WINDOW_WIDTH * floorPixel) + i] = FLOOR_COLOR;
         }
     }
 }
 
-void Renderer::Render(Player* player, Maze* maze, Ray rays[], Surfaces* surfaces)
+void Renderer::Render(Game* game)
 {
     SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
     SDL_RenderClear(m_renderer);
 
-    RenderProjection(player, rays, surfaces);
+    RenderProjection(game->m_player, game->m_rays, game->m_surfaces);
 
     RenderColorBuffer();
-    CleanColorBuffer(0xFF000000);
 
     // minimap
-    RenderMinimap(maze);
-    RenderRays(player, rays);
-    RenderPlayer(player);
+    RenderMinimap(game->m_maze, game->m_surfaces);
+    RenderRays(game->m_player, game->m_rays);
+    RenderPlayer(game->m_player);
 
     SDL_RenderPresent(m_renderer);
 }

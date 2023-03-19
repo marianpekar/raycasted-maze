@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include "PerlinNoise.h"
 
 PerlinNoise::PerlinNoise(bool predictable)
