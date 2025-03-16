@@ -10,6 +10,8 @@ public:
 	Maze(int startX, int startY);
 	int m_maze[MAZE_NUM_COLS][MAZE_NUM_ROWS];
 	int HasWallAt(float x, float y);
+	static void GetRandomTile(float& x, float& y);
+	void GetRandomOpenLocation(float& x, float& y);
 private:
 	int m_startX;
 	int m_startY;

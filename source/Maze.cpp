@@ -25,6 +25,22 @@ int Maze::HasWallAt(float x, float y)
     return m_maze[mapGridIndexY][mapGridIndexX] != 0;
 }
 
+void Maze::GetRandomTile(float& x, float& y)
+{
+    x = 1 + rand() % (MAZE_NUM_ROWS - 2);
+    y = 1 + rand() % (MAZE_NUM_COLS - 2);
+}
+
+void Maze::GetRandomOpenLocation(float& x, float& y)
+{
+    do {
+        x = 1 + rand() % (MAZE_NUM_ROWS - 2) * TILE_SIZE + 1;
+        y = 1 + rand() % (MAZE_NUM_COLS - 2) * TILE_SIZE + 1;
+    }
+    while (HasWallAt(x, y));
+}
+
+
 void Maze::GenerateMaze()
 {
 	for (auto x = 0; x < MAZE_NUM_COLS; x++) {

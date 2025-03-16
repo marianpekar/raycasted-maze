@@ -8,8 +8,6 @@ class Game
 public:
 	~Game();
 	void Setup(unsigned int seed);
-	void ProcessInput();
-	void MovePlayer(float deltaTime);
 	void Update();
 	void Delay(float time);
 	
@@ -24,5 +22,8 @@ public:
 
 	bool m_isGameRunning;
 	int m_ticksLastFrame;
+private:
+	void GatherInput();
+	void MovePlayer(float deltaTime) const;
 };
 
