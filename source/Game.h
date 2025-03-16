@@ -7,7 +7,7 @@ class Game
 {
 public:
 	~Game();
-	void Setup();
+	void Setup(unsigned int seed);
 	void ProcessInput();
 	void MovePlayer(float deltaTime);
 	void Update();

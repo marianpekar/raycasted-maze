@@ -14,9 +14,9 @@ Game::~Game()
     delete m_maze;
 }
 
-void Game::Setup()
+void Game::Setup(unsigned int seed)
 {
-    srand(time(0));
+    srand(seed > 0 ? seed : time(0));
 
     m_startX = 1 + rand() % (MAZE_NUM_ROWS - 2);
     m_startY = 1 + rand() % (MAZE_NUM_COLS - 2);
