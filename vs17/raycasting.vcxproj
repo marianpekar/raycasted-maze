@@ -104,7 +104,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)..\libs\SDL2_image-2.0.5\include;$(ProjectDir)..\libs\SDL2-2.0.12\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
@@ -165,6 +165,7 @@
     <ClCompile Include="../source/Surfaces.cpp" />
     <ClCompile Include="../source/Window.cpp" />
     <ClCompile Include="../source/PerlinNoise.cpp" />
+    <ClCompile Include="../source/PathFinder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="../source/Constants.h" />
@@ -177,6 +178,8 @@
     <ClInclude Include="../source/Surfaces.h" />
     <ClInclude Include="../source/Window.h" />
     <ClInclude Include="../source/PerlinNoise.h" />
+    <ClInclude Include="../source/Node.h" />
+    <ClInclude Include="../source/PathFinder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -12,5 +12,6 @@ public:
     float m_rotationAngle;
     float m_walkSpeed;
     float m_turnSpeed;
+    bool m_isBot = false;
 };
 

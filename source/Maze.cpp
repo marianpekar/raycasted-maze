@@ -9,6 +9,17 @@ Maze::~Maze()
     delete m_perlinNoise;
 }
 
+bool Maze::IsValid(int x, int y)
+{
+    return x >= 0 && x <= MAZE_NUM_COLS * TILE_SIZE && y >= 0 && y <= MAZE_NUM_ROWS * TILE_SIZE;
+}
+
+void Maze::TileFromPosition(float x, float y, int& tileX, int& tileY) const
+{
+    tileX = floor(x / TILE_SIZE);
+    tileY = floor(y / TILE_SIZE);
+}
+
 Maze::Maze(int startX, int startY) : m_startX(startX), m_startY(startY)
 {
     m_perlinNoise = new PerlinNoise(false);
@@ -20,6 +31,7 @@ int Maze::HasWallAt(float x, float y)
     if (x < 0 || x > MAZE_NUM_COLS * TILE_SIZE || y < 0 || y > MAZE_NUM_ROWS * TILE_SIZE) {
         return true;
     }
+    
     const int mapGridIndexX = floor(x / TILE_SIZE);
     const int mapGridIndexY = floor(y / TILE_SIZE);
     return m_maze[mapGridIndexY][mapGridIndexX] != 0;

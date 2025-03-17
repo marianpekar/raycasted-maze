@@ -7,6 +7,8 @@ class Maze
 public:
 	Maze();
 	~Maze();
+	bool IsValid(int x, int y);
+	void TileFromPosition(float x, float y, int& tileX, int& tileY) const;
 	Maze(int startX, int startY);
 	int m_maze[MAZE_NUM_COLS][MAZE_NUM_ROWS];
 	int HasWallAt(float x, float y);

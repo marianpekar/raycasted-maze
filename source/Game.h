@@ -1,13 +1,17 @@
 #pragma once
 
+#include <memory>
+
 #include "Constants.h"
 #include "Ray.h"
+
+struct Node;
 
 class Game
 {
 public:
 	~Game();
-	void Setup(unsigned int seed);
+	void Setup(unsigned int seed, bool isBot);
 	void Update();
 	void Delay(float time);
 	
@@ -20,9 +24,12 @@ public:
 	class Raycaster* m_raycaster;
 	Ray m_rays[NUM_RAYS];
 
+	std::shared_ptr<Node> currentNode = nullptr;
+	
 	bool m_isGameRunning;
 	int m_ticksLastFrame;
 private:
+	void SimulateMovement();
 	void GatherInput();
 	void MovePlayer(float deltaTime) const;
 };
