@@ -7,6 +7,7 @@
 #include "Surfaces.h"
 #include "Window.h"
 #include "Game.h"
+#include "Node.h"
 
 Renderer::Renderer(Window* window)
 {
@@ -93,6 +94,25 @@ void Renderer::RenderRays(Player* player, Ray rays[]) const
     }
 }
 
+void Renderer::RenderPath(std::shared_ptr<Node> path) const
+{
+    std::shared_ptr<Node> currentNode = path;
+    std::shared_ptr<Node> nextNode = currentNode->parent;
+    while (currentNode != nullptr && nextNode != nullptr)
+    {
+        SDL_RenderDrawLine(
+            m_renderer,
+            MINIMAP_SCALE_FACTOR * currentNode->x * TILE_SIZE,
+            MINIMAP_SCALE_FACTOR * currentNode->y * TILE_SIZE,
+            MINIMAP_SCALE_FACTOR * nextNode->x * TILE_SIZE,
+            MINIMAP_SCALE_FACTOR * nextNode->y * TILE_SIZE
+        );
+
+        currentNode = nextNode;
+        nextNode = currentNode->parent;
+    }
+}
+
 void Renderer::RenderColorBuffer() const
 {
     SDL_UpdateTexture(
@@ -160,6 +180,7 @@ void Renderer::Render(Game* game)
     RenderMinimap(game->m_maze, game->m_surfaces);
     RenderRays(game->m_player, game->m_rays);
     RenderPlayer(game->m_player);
+    RenderPath(game->m_currentNode);
 
     SDL_RenderPresent(m_renderer);
 }

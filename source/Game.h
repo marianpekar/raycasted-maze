@@ -24,7 +24,7 @@ public:
 	class Raycaster* m_raycaster;
 	Ray m_rays[NUM_RAYS];
 
-	std::shared_ptr<Node> currentNode = nullptr;
+	std::shared_ptr<Node> m_currentNode = nullptr;
 	
 	bool m_isGameRunning;
 	int m_ticksLastFrame;

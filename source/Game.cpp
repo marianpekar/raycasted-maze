@@ -63,7 +63,7 @@ void Game::Update()
 
 void Game::SimulateMovement(float deltaTime)
 {
-    if (currentNode == nullptr)
+    if (m_currentNode == nullptr)
     {
         float x, y;
         m_maze->GetRandomOpenLocation(x,y);
@@ -74,11 +74,11 @@ void Game::SimulateMovement(float deltaTime)
         int playerTileX, playerTileY;
         m_maze->TileFromPosition(m_player->m_x, m_player->m_y, playerTileX, playerTileY);
     
-        currentNode = PathFinder::FindPath(m_maze, playerTileX, playerTileY, targetTileX, targetTileY);
-        currentNode = PathFinder::SimplifyPath(currentNode);
+        m_currentNode = PathFinder::FindPath(m_maze, playerTileX, playerTileY, targetTileX, targetTileY);
+        m_currentNode = PathFinder::SimplifyPath(m_currentNode);
     }
 
-    std::shared_ptr<Node> nextNode = currentNode->parent;
+    std::shared_ptr<Node> nextNode = m_currentNode->parent;
     if (nextNode == nullptr)
         return;
     
@@ -116,7 +116,7 @@ void Game::SimulateMovement(float deltaTime)
         }
         else
         {
-            currentNode = nextNode;
+            m_currentNode = nextNode;
         }
     }
 }
