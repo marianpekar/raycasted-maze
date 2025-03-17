@@ -96,6 +96,9 @@ void Renderer::RenderRays(Player* player, Ray rays[]) const
 
 void Renderer::RenderPath(std::shared_ptr<Node> path) const
 {
+    if (path == nullptr)
+        return;
+    
     std::shared_ptr<Node> currentNode = path;
     std::shared_ptr<Node> nextNode = currentNode->parent;
     while (currentNode != nullptr && nextNode != nullptr)
