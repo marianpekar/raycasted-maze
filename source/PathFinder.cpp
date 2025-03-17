@@ -98,6 +98,53 @@ std::shared_ptr<Node> PathFinder::FindPath(Maze* maze, int sx, int sy, int tx, i
     return {};
 }
 
+std::shared_ptr<Node> PathFinder::SimplifyPath(std::shared_ptr<Node> node)
+{
+    std::vector<std::shared_ptr<Node>> fullPath;
+    for (auto current = node; current; current = current->parent)
+    {
+        fullPath.push_back(current);
+    }
+
+    std::reverse(fullPath.begin(), fullPath.end());
+
+    std::vector<std::shared_ptr<Node>> simplified;
+    simplified.reserve(fullPath.size());
+
+    simplified.push_back(fullPath[0]);
+
+    for (size_t i = 1; i + 1 < fullPath.size(); i++)
+    {
+        int xPrev = fullPath[i - 1]->x;
+        int yPrev = fullPath[i - 1]->y;
+        int xCurr = fullPath[i    ]->x;
+        int yCurr = fullPath[i    ]->y;
+        int xNext = fullPath[i + 1]->x;
+        int yNext = fullPath[i + 1]->y;
+
+        int dx1 = xCurr - xPrev;
+        int dy1 = yCurr - yPrev;
+        int dx2 = xNext - xCurr;
+        int dy2 = yNext - yCurr;
+
+        if (dx1 != dx2 || dy1 != dy2)
+        {
+            simplified.push_back(fullPath[i]);
+        }
+    }
+
+    simplified.push_back(fullPath.back());
+
+    for (size_t i = 0; i + 1 < simplified.size(); i++)
+    {
+        simplified[i]->parent = simplified[i + 1];
+    }
+    
+    simplified.back()->parent = nullptr;
+
+    return simplified[0];
+}
+
 int PathFinder::Heuristic(int sx, int sy, int tx, int ty)
 {
     return std::abs(sx - tx) + std::abs(sy - ty);

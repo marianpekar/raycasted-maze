@@ -29,7 +29,7 @@ public:
 	bool m_isGameRunning;
 	int m_ticksLastFrame;
 private:
-	void SimulateMovement();
+	void SimulateMovement(float deltaTime);
 	void GatherInput();
 	void MovePlayer(float deltaTime) const;
 };

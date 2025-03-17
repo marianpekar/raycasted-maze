@@ -50,19 +50,18 @@ void Game::Update()
     
     if (m_player->m_isBot)
     {
-        SimulateMovement();
+        SimulateMovement(deltaTime);
     }
     else
     {
         GatherInput();
+        MovePlayer(deltaTime);
     }
     
-    MovePlayer(deltaTime);
-
     m_raycaster->CastRays(m_player, m_maze, m_rays);
 }
 
-void Game::SimulateMovement()
+void Game::SimulateMovement(float deltaTime)
 {
     if (currentNode == nullptr)
     {
@@ -76,28 +75,50 @@ void Game::SimulateMovement()
         m_maze->TileFromPosition(m_player->m_x, m_player->m_y, playerTileX, playerTileY);
     
         currentNode = PathFinder::FindPath(m_maze, playerTileX, playerTileY, targetTileX, targetTileY);
-        m_player->m_x = currentNode->x * TILE_SIZE + TILE_SIZE * 0.5;
-        m_player->m_y = currentNode->y * TILE_SIZE + TILE_SIZE * 0.5;
+        currentNode = PathFinder::SimplifyPath(currentNode);
     }
 
-    // TODO: This is just for debugging, move and rotate player long path automatically ***
-    SDL_Event event;
-    SDL_PollEvent(&event);
-    switch (event.type) {
-    case SDL_KEYDOWN: {
-            if (event.key.keysym.sym == SDLK_SPACE)
-                currentNode = currentNode->parent;
-                if (currentNode != nullptr)
-                {
-                    m_player->m_x = currentNode->x * TILE_SIZE + TILE_SIZE * 0.5;
-                    m_player->m_y = currentNode->y * TILE_SIZE + TILE_SIZE * 0.5;
-                }
-            break;
+    std::shared_ptr<Node> nextNode = currentNode->parent;
+    if (nextNode == nullptr)
+        return;
+    
+    float targetX = nextNode->x * TILE_SIZE + TILE_SIZE * 0.5f;
+    float targetY = nextNode->y * TILE_SIZE + TILE_SIZE * 0.5f;
+    float dx = targetX - m_player->m_x;
+    float dy = targetY - m_player->m_y;
+
+    float desiredAngle = std::atan2(dy, dx);
+
+    float angleDiff = desiredAngle - m_player->m_rotationAngle;
+    angleDiff = std::atan2(std::sin(angleDiff), std::cos(angleDiff));
+
+    float turnFactor = 5.0f * deltaTime;  
+    if (turnFactor > 1.0f)
+        turnFactor = 1.0f;
+
+    float newAngle = m_player->m_rotationAngle + angleDiff * turnFactor;
+    newAngle = std::atan2(std::sin(newAngle), std::cos(newAngle));
+
+    m_player->m_rotationAngle = newAngle;
+
+    constexpr float angleThreshold = 0.004f;
+    if (std::fabs(angleDiff) < angleThreshold)
+    {
+        float distance = std::sqrt(dx * dx + dy * dy);
+        if (distance > 2.0f) 
+        {
+            float moveStep = m_player->m_walkSpeed * deltaTime;
+            if (moveStep > distance)
+                moveStep = distance;
+
+            m_player->m_x += std::cos(m_player->m_rotationAngle) * moveStep;
+            m_player->m_y += std::sin(m_player->m_rotationAngle) * moveStep;
+        }
+        else
+        {
+            currentNode = nextNode;
+        }
     }
-    default:
-        break;
-    }
-    // ***
 }
 
 void Game::GatherInput()
