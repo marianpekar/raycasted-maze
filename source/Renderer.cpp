@@ -80,7 +80,7 @@ void Renderer::RenderMinimap(const std::shared_ptr<Maze>& maze, const std::share
     }
 }
 
-void Renderer::RenderRays(const std::shared_ptr<Player>& player, Ray rays[]) const
+void Renderer::RenderRays(const std::shared_ptr<Player>& player, const Ray rays[]) const
 {
     SDL_SetRenderDrawColor(m_renderer, 255, 0, 0, 128);
     for (auto i = 0; i < NUM_RAYS; i++) {
@@ -127,7 +127,7 @@ void Renderer::RenderColorBuffer() const
     SDL_RenderCopy(m_renderer, m_colorBufferTexture, nullptr, nullptr);
 }
 
-void Renderer::RenderProjection(const std::shared_ptr<Player>& player, Ray rays[], const std::shared_ptr<Surfaces>& surfaces) const
+void Renderer::RenderProjection(const std::shared_ptr<Player>& player, const Ray rays[], const std::shared_ptr<Surfaces>& surfaces) const
 {
     for (auto i = 0; i < NUM_RAYS; i++) {
 	    const auto perpendicularDistance = rays[i].m_distance * cos(rays[i].m_rayAngle - player->m_rotationAngle);
@@ -175,15 +175,15 @@ void Renderer::Render(const std::shared_ptr<Game>& game) const
     SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
     SDL_RenderClear(m_renderer);
 
-    RenderProjection(game->m_player, game->m_rays, game->m_surfaces);
+    RenderProjection(game->GetPlayer(), game->GetRays(), game->GetSurfaces());
 
     RenderColorBuffer();
 
     // minimap
-    RenderMinimap(game->m_maze, game->m_surfaces);
-    RenderRays(game->m_player, game->m_rays);
-    RenderPlayer(game->m_player);
-    RenderPath(game->m_currentNode);
+    RenderMinimap(game->GetMaze(), game->GetSurfaces());
+    RenderRays(game->GetPlayer(), game->GetRays());
+    RenderPlayer(game->GetPlayer());
+    RenderPath(game->GetCurrentNode());
 
     SDL_RenderPresent(m_renderer);
 }

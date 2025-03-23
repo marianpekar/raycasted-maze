@@ -37,7 +37,7 @@ int main(int argc, char* args[]) {
 
     game->Setup(seed, isBot);
 	
-    while (game->m_isGameRunning) {    	
+    while (game->IsRunning()) {    	
         game->Update();
         renderer->Render(game);
         game->Delay(FRAME_TIME_LENGTH);

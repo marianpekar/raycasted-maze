@@ -27,7 +27,7 @@ private:
 	void RenderPlayer(const std::shared_ptr<Player>& player) const;
 	void RenderMinimap(const std::shared_ptr<Maze>& maze, const std::shared_ptr<Surfaces>& surfaces) const;
 	void RenderPath(std::shared_ptr<Node> path) const;
-	void RenderRays(const std::shared_ptr<Player>& player, Ray rays[]) const;
+	void RenderRays(const std::shared_ptr<Player>& player, const Ray rays[]) const;
 	void RenderColorBuffer() const;
-	void RenderProjection(const std::shared_ptr<Player>& player, Ray rays[], const std::shared_ptr<Surfaces>& surfaces) const;
+	void RenderProjection(const std::shared_ptr<Player>& player, const Ray rays[], const std::shared_ptr<Surfaces>& surfaces) const;
 };
