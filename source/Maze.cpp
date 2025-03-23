@@ -1,13 +1,7 @@
 #include <cstdlib>
-#include <ctime>
 #include <iostream>
 #include "Maze.h"
 #include "PerlinNoise.h"
-
-Maze::~Maze()
-{
-    delete m_perlinNoise;
-}
 
 bool Maze::IsValid(int x, int y)
 {
@@ -16,13 +10,13 @@ bool Maze::IsValid(int x, int y)
 
 void Maze::TileFromPosition(float x, float y, int& tileX, int& tileY) const
 {
-    tileX = floor(x / TILE_SIZE);
-    tileY = floor(y / TILE_SIZE);
+    tileX = std::floor(x / TILE_SIZE);
+    tileY = std::floor(y / TILE_SIZE);
 }
 
 Maze::Maze(int startX, int startY) : m_startX(startX), m_startY(startY)
 {
-    m_perlinNoise = new PerlinNoise(false);
+    m_perlinNoise = std::make_shared<PerlinNoise>(false);
 	GenerateMaze();
 }
 
@@ -32,26 +26,25 @@ int Maze::HasWallAt(float x, float y)
         return true;
     }
     
-    const int mapGridIndexX = floor(x / TILE_SIZE);
-    const int mapGridIndexY = floor(y / TILE_SIZE);
+    const int mapGridIndexX = std::floor(x / TILE_SIZE);
+    const int mapGridIndexY = std::floor(y / TILE_SIZE);
     return m_maze[mapGridIndexY][mapGridIndexX] != 0;
 }
 
 void Maze::GetRandomTile(float& x, float& y)
 {
-    x = 1 + rand() % (MAZE_NUM_ROWS - 2);
-    y = 1 + rand() % (MAZE_NUM_COLS - 2);
+    x = 1 + std::rand() % (MAZE_NUM_ROWS - 2);
+    y = 1 + std::rand() % (MAZE_NUM_COLS - 2);
 }
 
 void Maze::GetRandomOpenLocation(float& x, float& y)
 {
     do {
-        x = 1 + rand() % (MAZE_NUM_ROWS - 2) * TILE_SIZE + 1;
-        y = 1 + rand() % (MAZE_NUM_COLS - 2) * TILE_SIZE + 1;
+        x = 1 + std::rand() % (MAZE_NUM_ROWS - 2) * TILE_SIZE + 1;
+        y = 1 + std::rand() % (MAZE_NUM_COLS - 2) * TILE_SIZE + 1;
     }
     while (HasWallAt(x, y));
 }
-
 
 void Maze::GenerateMaze()
 {
@@ -69,7 +62,7 @@ void Maze::Dig(int row, int column)
 {
     int directions[4]{};
     for (int d = 0; d < 4; d++) {
-        directions[d] = rand() % 4;
+        directions[d] = std::rand() % 4;
     }
 
     for (int i = 0; i < 4; i++) {
@@ -130,8 +123,6 @@ void Maze::PaintWalls()
                 PaintWall(x, y);      	
         }
     }
-
-    PrintMazeToConsole();
 }
 
 void Maze::PaintWall(int row, int column)
@@ -141,17 +132,4 @@ void Maze::PaintWall(int row, int column)
     auto textureId = static_cast<int>(floor(noiseRemaped));
 	
     m_maze[row][column] = textureId;
-}
-
-void Maze::PrintMazeToConsole()
-{
-    for (auto x = 0; x < MAZE_NUM_COLS; x++) {
-        for (auto y = 0; y < MAZE_NUM_ROWS; y++) {
-            if (m_maze[x][y] == 0)
-                std::cout << "  ";
-            else
-                std::cout << m_maze[x][y] << " ";
-        }
-        std::cout << std::endl;
-    }
 }

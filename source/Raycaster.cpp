@@ -1,10 +1,13 @@
 #include <cmath>
 #include "Raycaster.h"
+
+#include <memory>
+
 #include "Player.h"
 #include "Maze.h"
 #include "Ray.h"
 
-void Raycaster::CastRays(Player* player, Maze* maze, Ray rays[NUM_RAYS]) const
+void Raycaster::CastRays(const std::shared_ptr<Player>& player, const std::shared_ptr<Maze>& maze, Ray rays[NUM_RAYS]) const
 {
     float rayAngle = player->m_rotationAngle - (FOV_ANGLE / 2);
 
@@ -14,7 +17,7 @@ void Raycaster::CastRays(Player* player, Maze* maze, Ray rays[NUM_RAYS]) const
     }
 }
 
-void Raycaster::CastRay(Player* player, Maze* maze, Ray rays[NUM_RAYS], float rayAngle, int stripId) const
+void Raycaster::CastRay(const std::shared_ptr<Player>& player, const std::shared_ptr<Maze>& maze, Ray rays[NUM_RAYS], float rayAngle, int stripId) const
 {
     rayAngle = NormalizeAngle(rayAngle);
 
@@ -121,7 +124,7 @@ void Raycaster::CastRay(Player* player, Maze* maze, Ray rays[NUM_RAYS], float ra
 
 float Raycaster::NormalizeAngle(float angle) const
 {
-    angle = remainder(angle, TWO_PI);
+    angle = std::remainder(angle, TWO_PI);
     if (angle < 0) {
         angle = TWO_PI + angle;
     }

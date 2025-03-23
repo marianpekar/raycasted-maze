@@ -2,6 +2,8 @@
 #include <ctime>
 #include <cstdlib>
 #include "Game.h"
+#include <memory>
+
 #include "Maze.h"
 #include "Node.h"
 #include "PathFinder.h"
@@ -9,23 +11,15 @@
 #include "Raycaster.h"
 #include "Surfaces.h"
 
-Game::~Game()
-{
-    delete m_surfaces;
-    delete m_raycaster;
-    delete m_player;
-    delete m_maze;
-}
-
 void Game::Setup(unsigned int seed, bool isBot)
 {
-    srand(seed > 0 ? seed : time(0));
+    std::srand(seed > 0 ? seed : std::time(0));
 
     Maze::GetRandomTile(m_startX, m_startY);
 
-    m_maze = new Maze(m_startX, m_startY);
+    m_maze = std::make_shared<Maze>(m_startX, m_startY);
 
-    m_player = new Player;
+    m_player = std::make_shared<Player>();
     m_player->m_isBot = isBot;
     m_player->m_x = m_startY * TILE_SIZE + TILE_SIZE * 0.5;
     m_player->m_y = m_startX * TILE_SIZE + TILE_SIZE * 0.5;
@@ -37,8 +31,8 @@ void Game::Setup(unsigned int seed, bool isBot)
     m_player->m_walkSpeed = PLAYER_WALK_SPEED;
     m_player->m_turnSpeed = PLAYER_TURN_SPEED * (PI / 180);
 
-    m_raycaster = new Raycaster();
-    m_surfaces = new Surfaces();
+    m_raycaster = std::make_shared<Raycaster>();
+    m_surfaces = std::make_shared<Surfaces>();
     
     m_isGameRunning = true;
 }

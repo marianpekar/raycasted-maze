@@ -6,7 +6,7 @@
 Window::Window()
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        std::cout << "Error initializing SDL." << std::endl;
+        std::cout << "Error initializing SDL.\n";
     }
     m_window = SDL_CreateWindow(
         nullptr,
@@ -17,7 +17,7 @@ Window::Window()
         SDL_WINDOW_BORDERLESS
     );
     if (!m_window) {
-        std::cout << "Error creating SDL window." << std::endl;
+        std::cout << "Error creating SDL window.\n";
     }
 }
 

@@ -6,11 +6,14 @@
 #include "Ray.h"
 
 struct Node;
+class Player;
+class Maze;
+class Surfaces;
+class Raycaster;
 
 class Game
 {
 public:
-	~Game();
 	void Setup(unsigned int seed, bool isBot);
 	void Update();
 	void Delay(float time);
@@ -18,10 +21,10 @@ public:
 	float m_startX;
 	float m_startY;
 	
-	class Player* m_player;
-	class Maze* m_maze;
-	class Surfaces* m_surfaces;
-	class Raycaster* m_raycaster;
+	std::shared_ptr<Player> m_player;
+	std::shared_ptr<Maze> m_maze;
+	std::shared_ptr<Surfaces> m_surfaces;
+	std::shared_ptr<Raycaster> m_raycaster;
 	Ray m_rays[NUM_RAYS];
 
 	std::shared_ptr<Node> m_currentNode = nullptr;

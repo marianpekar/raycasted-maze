@@ -9,11 +9,11 @@
 #include "Game.h"
 #include "Node.h"
 
-Renderer::Renderer(Window* window)
+Renderer::Renderer(const std::shared_ptr<Window>& window)
 {
     m_renderer = SDL_CreateRenderer(window->m_window, -1, 0);
     if (!m_renderer) {
-        std::cout << "Error creating SDL renderer" << std::endl;
+        std::cout << "Error creating SDL renderer\n";
     }
 
     SDL_SetRenderDrawBlendMode(m_renderer, SDL_BLENDMODE_BLEND);
@@ -35,7 +35,7 @@ Renderer::~Renderer()
     SDL_DestroyRenderer(m_renderer);
 }
 
-void Renderer::RenderPlayer(Player* player) const
+void Renderer::RenderPlayer(const std::shared_ptr<Player>& player) const
 {
     SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
     SDL_Rect playerRect = {
@@ -55,7 +55,7 @@ void Renderer::RenderPlayer(Player* player) const
     );
 }
 
-void Renderer::RenderMinimap(Maze* maze, Surfaces* surfaces) const
+void Renderer::RenderMinimap(const std::shared_ptr<Maze>& maze, const std::shared_ptr<Surfaces>& surfaces) const
 {
     for (int i = 0; i < MAZE_NUM_ROWS; i++) {
         for (int j = 0; j < MAZE_NUM_COLS; j++) {
@@ -80,7 +80,7 @@ void Renderer::RenderMinimap(Maze* maze, Surfaces* surfaces) const
     }
 }
 
-void Renderer::RenderRays(Player* player, Ray rays[]) const
+void Renderer::RenderRays(const std::shared_ptr<Player>& player, Ray rays[]) const
 {
     SDL_SetRenderDrawColor(m_renderer, 255, 0, 0, 128);
     for (auto i = 0; i < NUM_RAYS; i++) {
@@ -127,7 +127,7 @@ void Renderer::RenderColorBuffer() const
     SDL_RenderCopy(m_renderer, m_colorBufferTexture, nullptr, nullptr);
 }
 
-void Renderer::RenderProjection(Player* player, Ray rays[], Surfaces* surfaces) const
+void Renderer::RenderProjection(const std::shared_ptr<Player>& player, Ray rays[], const std::shared_ptr<Surfaces>& surfaces) const
 {
     for (auto i = 0; i < NUM_RAYS; i++) {
 	    const auto perpendicularDistance = rays[i].m_distance * cos(rays[i].m_rayAngle - player->m_rotationAngle);
@@ -170,7 +170,7 @@ void Renderer::RenderProjection(Player* player, Ray rays[], Surfaces* surfaces) 
     }
 }
 
-void Renderer::Render(Game* game)
+void Renderer::Render(const std::shared_ptr<Game>& game) const
 {
     SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
     SDL_RenderClear(m_renderer);

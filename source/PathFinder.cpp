@@ -9,7 +9,7 @@
 static constexpr int directionsX[4] = {0,  1,  0, -1};
 static constexpr int directionsY[4] = {-1, 0,  1,  0};
 
-std::shared_ptr<Node> PathFinder::FindPath(Maze* maze, int sx, int sy, int tx, int ty)
+std::shared_ptr<Node> PathFinder::FindPath(const std::shared_ptr<Maze>& maze, int sx, int sy, int tx, int ty)
 {
     std::vector<std::shared_ptr<Node>> open;
     std::vector<std::shared_ptr<Node>> closed;

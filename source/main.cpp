@@ -1,12 +1,9 @@
 #include <string>
+#include <memory>
 
 #include "Game.h"
 #include "Renderer.h"
 #include "Window.h"
-
-Window* window;
-Renderer* renderer;
-Game* game;
 
 void ParseArgs(int argc, char** args, unsigned int& seed, bool& isBot)
 {
@@ -34,9 +31,9 @@ int main(int argc, char* args[]) {
     bool isBot = false;
     ParseArgs(argc, args, seed, isBot);
     
-    window = new Window();
-    renderer = new Renderer(window);
-    game = new Game();
+    const std::shared_ptr<Window> window = std::make_shared<Window>();
+    const std::shared_ptr<Renderer> renderer = std::make_shared<Renderer>(window);
+    const std::shared_ptr<Game> game = std::make_shared<Game>();
 
     game->Setup(seed, isBot);
 	
@@ -45,9 +42,6 @@ int main(int argc, char* args[]) {
         renderer->Render(game);
         game->Delay(FRAME_TIME_LENGTH);
     }
-	
-    delete game;
-    delete renderer;
-    delete window;
+    
     return 0;
 }

@@ -1,12 +1,14 @@
 #pragma once
 
+#include <memory>
+
 #include "Constants.h"
+
+class PerlinNoise;
 
 class Maze
 {
 public:
-	Maze();
-	~Maze();
 	bool IsValid(int x, int y);
 	void TileFromPosition(float x, float y, int& tileX, int& tileY) const;
 	Maze(int startX, int startY);
@@ -17,11 +19,10 @@ public:
 private:
 	int m_startX;
 	int m_startY;
-	class PerlinNoise* m_perlinNoise;
+	std::shared_ptr<PerlinNoise> m_perlinNoise;
 	void GenerateMaze();
 	void Dig(int row, int column);
 	void PaintWalls();
 	void PaintWall(int row, int column);
-	void PrintMazeToConsole(); // just for debugging
 };
 
