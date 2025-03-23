@@ -4,7 +4,7 @@
 #include <memory>
 
 struct Ray;
-class Node;
+struct Node;
 class Maze;
 class Surfaces;
 struct Player;
