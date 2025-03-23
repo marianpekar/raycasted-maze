@@ -22,27 +22,26 @@ Surfaces::Surfaces()
     m_minimapColors[8] = EAGLE_TEXTURE_MINIMAP_COLOR;
 }
 
-uint32_t Surfaces::GetPixel(uint32_t* pixels, int x, int y)
+uint32_t Surfaces::GetPixel(const uint32_t* texels, int x, int y)
 {
-    return pixels[(y * TEXTURE_WIDTH) + x];
+    return texels[y * TEXTURE_WIDTH + x];
 }
 
-
-int Surfaces::Darken(int color, float amount)
+uint32_t Surfaces::Darken(uint32_t color, float amount)
 {
     amount = 1.0f - amount;
-    auto a = (color >> 24) & 0xFF;
-    auto r = static_cast<int>(((color >> 16) & 0xFF) * amount);
-    auto g = static_cast<int>(((color >> 8) & 0xFF) * amount);
-    auto b = static_cast<int>((color & 0xFF) * amount);
+    const uint32_t a = color >> 24 & 0xFF;
+    const uint32_t r = static_cast<uint32_t>(static_cast<float>((color >> 16 & 0xFF)) * amount);
+    const uint32_t g = static_cast<uint32_t>(static_cast<float>(color >> 8 & 0xFF) * amount);
+    const uint32_t b = static_cast<uint32_t>(static_cast<float>(color & 0xFF) * amount);
 
     return (a << 24) | (r << 16) | (g << 8) | b;
 }
 
 uint32_t* Surfaces::LoadPixels(const char* filePath)
 {
-    auto image = IMG_Load(filePath);
-    auto pixels = static_cast<uint32_t*>(image->pixels);
-	
+    const SDL_Surface* image = IMG_Load(filePath);
+    uint32_t* pixels = static_cast<uint32_t*>(image->pixels);
+
     return pixels;
 }

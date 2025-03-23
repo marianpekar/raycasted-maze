@@ -9,12 +9,12 @@ class PerlinNoise;
 class Maze
 {
 public:
-	bool IsValid(int x, int y);
-	void TileFromPosition(float x, float y, int& tileX, int& tileY) const;
+	static bool IsValid(int x, int y);
+	static void TileFromPosition(float x, float y, int& tileX, int& tileY);
 	Maze(int startX, int startY);
-	int HasWallAt(float x, float y);
+	int HasWallAt(float x, float y) const;
 	static void GetRandomTile(float& x, float& y);
-	void GetRandomOpenLocation(float& x, float& y);
+	void GetRandomOpenLocation(float& x, float& y) const;
 	int GetAt(int x, int y) const;
 	void SetAt(int x, int y, int val);
 private:

@@ -1,9 +1,9 @@
 #pragma once
 
-constexpr auto PI = 3.14159265;
-constexpr auto TWO_PI = 6.28318530;
+constexpr auto PI = 3.14159265f;
+constexpr auto TWO_PI = 6.28318530f;
 
-constexpr auto TILE_SIZE = 64;
+constexpr auto TILE_SIZE = 64.f;
 constexpr auto MAZE_HEIGHT = 64;
 constexpr auto MAZE_WIDTH = 64;
 constexpr auto NUM_TEXTURES = 8;
@@ -11,7 +11,7 @@ constexpr auto NUM_TEXTURES = 8;
 constexpr auto PLAYER_WALK_SPEED = 150;
 constexpr auto PLAYER_TURN_SPEED = 90;
 
-constexpr auto MINIMAP_SCALE_FACTOR = 0.0625;
+constexpr auto MINIMAP_SCALE_FACTOR = 0.0625f;
 
 constexpr auto WINDOW_WIDTH = 800;
 constexpr auto WINDOW_HEIGHT = 600;

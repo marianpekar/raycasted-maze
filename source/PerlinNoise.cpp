@@ -1,7 +1,7 @@
-#include <cstdlib>
+#include <iostream>
 #include "PerlinNoise.h"
 
-PerlinNoise::PerlinNoise(bool predictable)
+PerlinNoise::PerlinNoise(const bool predictable)
 {
 	if(predictable)		
 		for(auto i = 0; i < 512; i++)
@@ -9,45 +9,41 @@ PerlinNoise::PerlinNoise(bool predictable)
 			m_permutations[i] = m_p[i % 256];
 		}
 	else
-		for (auto i = 0; i < 512; i++)
+		for (int& m_permutation : m_permutations)
 		{
-			auto random = rand() % 256;
-			m_permutations[i] = random % 256;
+			const int random = rand() % 256;
+			m_permutation = random % 256;
 		}
 }
 
-float PerlinNoise::Perlin(float x, float y)
+float PerlinNoise::Perlin(const float x, const float y) const
 {
-	int a = floor(x);
-	int b = floor(y);
-
-	x = x - a;
-	y = y - b;
+	int a = static_cast<int>(std::floor(x));
+	int b = static_cast<int>(std::floor(y));
 
 	a &= 255;
 	b &= 255;
 
-	auto gi00 = m_permutations[a + m_permutations[b]] % 8;
-	auto gi01 = m_permutations[a + m_permutations[b]] % 8;
-	auto gi10 = m_permutations[a + m_permutations[b]] % 8;
-	auto gi11 = m_permutations[a + m_permutations[b]] % 8;
+	const int gi00 = m_permutations[a + m_permutations[b]] % 8;
+	const int gi01 = m_permutations[a + m_permutations[b]] % 8;
+	const int gi10 = m_permutations[a + m_permutations[b]] % 8;
+	const int gi11 = m_permutations[a + m_permutations[b]] % 8;
 
-	auto n00 = PerlinDot(m_grads[gi00], x, y);
-	auto n10 = PerlinDot(m_grads[gi10], x - 1, y);
-	auto n01 = PerlinDot(m_grads[gi01], x, y - 1);
-	auto n11 = PerlinDot(m_grads[gi11], x - 1, y - 1);
+	const float n00 = PerlinDot(m_grads[gi00], x, y);
+	const float n10 = PerlinDot(m_grads[gi10], x - 1, y);
+	const float n01 = PerlinDot(m_grads[gi01], x, y - 1);
+	const float n11 = PerlinDot(m_grads[gi11], x - 1, y - 1);
 
+	const float u = Fade(x);
+	const float v = Fade(y);
 
-	float u = Fade(x);
-	float v = Fade(y);
-
-	float x1 = Lerp(n00, n10, u);
-	float x2 = Lerp(n01, n11, u);
+	const float x1 = Lerp(n00, n10, u);
+	const float x2 = Lerp(n01, n11, u);
 
 	return Lerp(x1, x2, v);
 }
 
-float PerlinNoise::FractalBrownianMotion(float x, float y, int octaves, float persistence)
+float PerlinNoise::FractalBrownianMotion(float x, float y, int octaves, float persistence) const
 {
 	float total = 0;
 	float frequency = 1;
@@ -64,22 +60,24 @@ float PerlinNoise::FractalBrownianMotion(float x, float y, int octaves, float pe
 	return total / maxValue;
 }
 
-float PerlinNoise::PerlinDot(Grad grad, float x, float y)
+float PerlinNoise::PerlinDot(const Grad& grad, const float x, const float y)
 {
 	return grad.m_x * x + grad.m_y * y;
 }
 
-float PerlinNoise::Lerp(float a, float b, float t)
+float PerlinNoise::Lerp(const float a, const float b, const float t)
 {
 	return (1.0f - t) * a + t * b;
 }
 
-float PerlinNoise::Fade(float t)
+float PerlinNoise::Fade(const float t)
 {
 	return t * t * t * (t * (t * 6.0f - 15.0f) + 10.0f);
 }
 
-float PerlinNoise::Remap(float value, float min1, float max1, float min2, float max2)
+float PerlinNoise::Remap(const float value,
+	const float min1, const float max1,
+	const float min2, const float max2)
 {
 	return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 }

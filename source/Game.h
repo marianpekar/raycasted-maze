@@ -16,7 +16,6 @@ class Game
 public:
 	void Setup(unsigned int seed, bool isBot);
 	void Update();
-	void Delay(float time);
 
 	float GetStartX() const { return m_startX; }
 	float GetStartY() const { return m_startY; }
@@ -40,7 +39,7 @@ private:
 	std::shared_ptr<Node> m_currentNode = nullptr;
 	
 	bool m_isGameRunning = false;
-	int m_ticksLastFrame = 0;
+	uint32_t m_ticksLastFrame = 0;
 	
 	void SimulateMovement(float deltaTime);
 	void GatherInput();

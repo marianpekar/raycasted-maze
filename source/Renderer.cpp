@@ -39,19 +39,19 @@ void Renderer::RenderPlayer(const std::shared_ptr<Player>& player) const
 {
     SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
     SDL_Rect playerRect = {
-        player->x * MINIMAP_SCALE_FACTOR,
-        player->y * MINIMAP_SCALE_FACTOR,
-        player->width * MINIMAP_SCALE_FACTOR,
-        player->height * MINIMAP_SCALE_FACTOR
+        static_cast<int>(player->x * MINIMAP_SCALE_FACTOR),
+        static_cast<int>(player->y * MINIMAP_SCALE_FACTOR),
+        static_cast<int>(player->width * MINIMAP_SCALE_FACTOR),
+        static_cast<int>(player->height * MINIMAP_SCALE_FACTOR)
     };
     SDL_RenderFillRect(m_renderer, &playerRect);
 
     SDL_RenderDrawLine(
         m_renderer,
-        MINIMAP_SCALE_FACTOR * player->x,
-        MINIMAP_SCALE_FACTOR * player->y,
-        MINIMAP_SCALE_FACTOR * player->x + static_cast<float>(cos(player->rotationAngle)) * 2,
-        MINIMAP_SCALE_FACTOR * player->y + static_cast<float>(sin(player->rotationAngle)) * 2
+        static_cast<int>(MINIMAP_SCALE_FACTOR * player->x),
+        static_cast<int>(MINIMAP_SCALE_FACTOR * player->y),
+        static_cast<int>(MINIMAP_SCALE_FACTOR * player->x + cos(player->rotationAngle) * 2.f),
+        static_cast<int>(MINIMAP_SCALE_FACTOR * player->y + sin(player->rotationAngle) * 2.)
     );
 }
 
@@ -59,8 +59,8 @@ void Renderer::RenderMinimap(const std::shared_ptr<Maze>& maze, const std::share
 {
     for (int i = 0; i < MAZE_HEIGHT; i++) {
         for (int j = 0; j < MAZE_WIDTH; j++) {
-            int tileX = j * TILE_SIZE;
-            int tileY = i * TILE_SIZE;
+            float tileX = static_cast<float>(j) * TILE_SIZE;
+            float tileY = static_cast<float>(i) * TILE_SIZE;
 
             uint32_t tileColor = surfaces->m_minimapColors[maze->GetAt(j,i)];
 
@@ -70,10 +70,10 @@ void Renderer::RenderMinimap(const std::shared_ptr<Maze>& maze, const std::share
 
             SDL_SetRenderDrawColor(m_renderer, r, g, b, 128);
             SDL_Rect mapTileRect = {
-                tileX * MINIMAP_SCALE_FACTOR,
-                tileY * MINIMAP_SCALE_FACTOR,
-                TILE_SIZE * MINIMAP_SCALE_FACTOR,
-                TILE_SIZE * MINIMAP_SCALE_FACTOR
+                static_cast<int>(tileX * MINIMAP_SCALE_FACTOR),
+                static_cast<int>(tileY * MINIMAP_SCALE_FACTOR),
+                static_cast<int>(TILE_SIZE * MINIMAP_SCALE_FACTOR),
+                static_cast<int>(TILE_SIZE * MINIMAP_SCALE_FACTOR)
             };
             SDL_RenderFillRect(m_renderer, &mapTileRect);
         }
@@ -86,15 +86,15 @@ void Renderer::RenderRays(const std::shared_ptr<Player>& player, const Ray rays[
     for (auto i = 0; i < NUM_RAYS; i++) {
         SDL_RenderDrawLine(
             m_renderer,
-            MINIMAP_SCALE_FACTOR * player->x,
-            MINIMAP_SCALE_FACTOR * player->y,
-            MINIMAP_SCALE_FACTOR * rays[i].wallHitX,
-            MINIMAP_SCALE_FACTOR * rays[i].wallHitY
+            static_cast<int>(MINIMAP_SCALE_FACTOR * player->x),
+            static_cast<int>(MINIMAP_SCALE_FACTOR * player->y),
+            static_cast<int>(MINIMAP_SCALE_FACTOR * rays[i].wallHitX),
+            static_cast<int>(MINIMAP_SCALE_FACTOR * rays[i].wallHitY)
         );
     }
 }
 
-void Renderer::RenderPath(std::shared_ptr<Node> path) const
+void Renderer::RenderPath(const std::shared_ptr<Node>& path) const
 {
     if (path == nullptr)
         return;
@@ -105,10 +105,10 @@ void Renderer::RenderPath(std::shared_ptr<Node> path) const
     {
         SDL_RenderDrawLine(
             m_renderer,
-            MINIMAP_SCALE_FACTOR * currentNode->x * TILE_SIZE,
-            MINIMAP_SCALE_FACTOR * currentNode->y * TILE_SIZE,
-            MINIMAP_SCALE_FACTOR * nextNode->x * TILE_SIZE,
-            MINIMAP_SCALE_FACTOR * nextNode->y * TILE_SIZE
+            static_cast<int>(MINIMAP_SCALE_FACTOR * static_cast<float>(currentNode->x) * TILE_SIZE),
+            static_cast<int>(MINIMAP_SCALE_FACTOR * static_cast<float>(currentNode->y) * TILE_SIZE),
+            static_cast<int>(MINIMAP_SCALE_FACTOR * static_cast<float>(nextNode->x) * TILE_SIZE),
+            static_cast<int>(MINIMAP_SCALE_FACTOR * static_cast<float>(nextNode->y) * TILE_SIZE)
         );
 
         currentNode = nextNode;
@@ -129,42 +129,42 @@ void Renderer::RenderColorBuffer() const
 
 void Renderer::RenderProjection(const std::shared_ptr<Player>& player, const Ray rays[], const std::shared_ptr<Surfaces>& surfaces) const
 {
-    for (auto i = 0; i < NUM_RAYS; i++) {
-	    const auto perpendicularDistance = rays[i].distance * cos(rays[i].rayAngle - player->rotationAngle);
-	    const float distanceToProjectionPlane = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
+    for (int i = 0; i < NUM_RAYS; i++) {
+	    const float perpendicularDistance = rays[i].distance * cos(rays[i].rayAngle - player->rotationAngle);
+	    const float distanceToProjectionPlane = (WINDOW_WIDTH / 2.0f) / tan(FOV_ANGLE / 2);
 	    const float projectedWallHeight = (TILE_SIZE / perpendicularDistance) * distanceToProjectionPlane;
 
-	    const auto wallStripHeight = static_cast<int>(projectedWallHeight);
-
-        auto wallTopPixel = (WINDOW_HEIGHT / 2) - (wallStripHeight / 2);
+        float wallTopPixel = (WINDOW_HEIGHT / 2.0f) - (projectedWallHeight / 2.0f);
         wallTopPixel = wallTopPixel < 0 ? 0 : wallTopPixel;
 
-        auto wallBottomPixel = (WINDOW_HEIGHT / 2) + (wallStripHeight / 2);
+        float wallBottomPixel = (WINDOW_HEIGHT / 2.0f) + (projectedWallHeight / 2.0f);
         wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
 
-        for (auto ceilingPixel = 0; ceilingPixel <= wallTopPixel; ceilingPixel++) {
+        for (int ceilingPixel = 0; static_cast<float>(ceilingPixel) <= wallTopPixel; ceilingPixel++) {
             m_colorBuffer[(WINDOW_WIDTH * ceilingPixel) + i] = CEILING_COLOR;
         }
 
         const auto surfaceId = rays[i].wallHitContent;
 
-        const auto surfaceOffsetX = rays[i].wasHitVertical ? static_cast<int>(rays[i].wallHitY) % TILE_SIZE : static_cast<int>(rays[i].wallHitX) % TILE_SIZE;;
+        const auto surfaceOffsetX = rays[i].wasHitVertical ?
+            static_cast<int>(rays[i].wallHitY) % static_cast<int>(TILE_SIZE) :
+            static_cast<int>(rays[i].wallHitX) % static_cast<int>(TILE_SIZE);
 
-        for (auto y = wallTopPixel; y < wallBottomPixel; y++) {
-	        const auto distanceFromTop = (y + (wallStripHeight / 2) - (WINDOW_HEIGHT / 2));
-            const auto surfaceOffetY = distanceFromTop * (static_cast<float>(TEXTURE_HEIGHT) / wallStripHeight);
+        for (int y = static_cast<int>(wallTopPixel); y < static_cast<int>(wallBottomPixel); y++) {
+	        const float distanceFromTop = static_cast<float>(y) + (projectedWallHeight / 2) - (WINDOW_HEIGHT / 2.0f);
+            const float surfaceOffetY = distanceFromTop * (static_cast<float>(TEXTURE_HEIGHT) / projectedWallHeight);
 
 	        const auto texels = surfaces->m_textures[surfaceId];
-	        const auto texel = Surfaces::GetPixel(texels, surfaceOffsetX, surfaceOffetY);
+	        const uint32_t texel = Surfaces::GetPixel(texels, surfaceOffsetX, static_cast<int>(surfaceOffetY));
         	
-            auto darkenAmount = rays[i].wasHitVertical ? perpendicularDistance * 0.001f : 0.3f + perpendicularDistance * 0.001f;
+            float darkenAmount = rays[i].wasHitVertical ? perpendicularDistance * 0.001f : 0.3f + perpendicularDistance * 0.001f;
             if (darkenAmount > 0.6f)
                 darkenAmount = 0.6f;
 
             m_colorBuffer[(WINDOW_WIDTH * y) + i] = Surfaces::Darken(texel, darkenAmount);
         }
 
-        for (auto floorPixel = wallBottomPixel; floorPixel < WINDOW_HEIGHT; floorPixel++) {
+        for (int floorPixel = static_cast<int>(wallBottomPixel); floorPixel < WINDOW_HEIGHT; floorPixel++) {
             m_colorBuffer[(WINDOW_WIDTH * floorPixel) + i] = FLOOR_COLOR;
         }
     }

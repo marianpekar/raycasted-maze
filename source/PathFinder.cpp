@@ -9,7 +9,9 @@
 static constexpr int directionsX[4] = {0,  1,  0, -1};
 static constexpr int directionsY[4] = {-1, 0,  1,  0};
 
-std::shared_ptr<Node> PathFinder::FindPath(const std::shared_ptr<Maze>& maze, int sx, int sy, int tx, int ty)
+std::shared_ptr<Node> PathFinder::FindPath(const std::shared_ptr<Maze>& maze,
+    const int sx, const int sy,
+    const int tx, const int ty)
 {
     std::vector<std::shared_ptr<Node>> open;
     std::vector<std::shared_ptr<Node>> closed;
@@ -29,7 +31,8 @@ std::shared_ptr<Node> PathFinder::FindPath(const std::shared_ptr<Maze>& maze, in
     {
         auto currentIt = std::ranges::min_element(
             open,
-            [](const std::shared_ptr<Node>& lhs, const std::shared_ptr<Node>& rhs) {
+            [](const std::shared_ptr<Node>& lhs, const std::shared_ptr<Node>& rhs)
+            {
                 return lhs->f < rhs->f;
             }
         );
@@ -55,23 +58,25 @@ std::shared_ptr<Node> PathFinder::FindPath(const std::shared_ptr<Maze>& maze, in
             if (maze->GetAt(nx, ny))
                 continue;
 
-            bool alreadyClosed = std::ranges::any_of(
+            if (std::ranges::any_of(
                 closed,
-                [ny, nx](const std::shared_ptr<Node>& node) {
+                [ny, nx](const std::shared_ptr<Node>& node)
+                {
                     return (node->x == nx && node->y == ny);
                 }
-            );
-            
-            if (alreadyClosed)
+            ))
+            {
                 continue;
+            }
 
-            int newG = currentNode->g + 1;
-            int newH = Heuristic(nx, ny, tx, ty);
-            int newF = newG + newH;
+            const int newG = currentNode->g + 1;
+            const int newH = Heuristic(nx, ny, tx, ty);
+            const int newF = newG + newH;
 
             auto itOpen = std::ranges::find_if(
                 open,
-                [ny, nx](const std::shared_ptr<Node>& node) {
+                [ny, nx](const std::shared_ptr<Node>& node)
+                {
                     return (node->x == nx && node->y == ny);
                 }
             );
@@ -106,7 +111,7 @@ std::shared_ptr<Node> PathFinder::SimplifyPath(const std::shared_ptr<Node>& node
         fullPath.push_back(current);
     }
 
-    std::reverse(fullPath.begin(), fullPath.end());
+    std::ranges::reverse(fullPath);
 
     std::vector<std::shared_ptr<Node>> simplified;
     simplified.reserve(fullPath.size());
@@ -115,17 +120,17 @@ std::shared_ptr<Node> PathFinder::SimplifyPath(const std::shared_ptr<Node>& node
 
     for (size_t i = 1; i + 1 < fullPath.size(); i++)
     {
-        int xPrev = fullPath[i - 1]->x;
-        int yPrev = fullPath[i - 1]->y;
-        int xCurr = fullPath[i    ]->x;
-        int yCurr = fullPath[i    ]->y;
-        int xNext = fullPath[i + 1]->x;
-        int yNext = fullPath[i + 1]->y;
+        const int xPrev = fullPath[i - 1]->x;
+        const int yPrev = fullPath[i - 1]->y;
+        const int xCurr = fullPath[i    ]->x;
+        const int yCurr = fullPath[i    ]->y;
+        const int xNext = fullPath[i + 1]->x;
+        const int yNext = fullPath[i + 1]->y;
 
-        int dx1 = xCurr - xPrev;
-        int dy1 = yCurr - yPrev;
-        int dx2 = xNext - xCurr;
-        int dy2 = yNext - yCurr;
+        const int dx1 = xCurr - xPrev;
+        const int dy1 = yCurr - yPrev;
+        const int dx2 = xNext - xCurr;
+        const int dy2 = yNext - yCurr;
 
         if (dx1 != dx2 || dy1 != dy2)
         {
@@ -145,7 +150,7 @@ std::shared_ptr<Node> PathFinder::SimplifyPath(const std::shared_ptr<Node>& node
     return simplified[0];
 }
 
-int PathFinder::Heuristic(int sx, int sy, int tx, int ty)
+int PathFinder::Heuristic(const int sx, const int sy, const int tx, const int ty)
 {
     return std::abs(sx - tx) + std::abs(sy - ty);
 }

@@ -12,9 +12,9 @@ class PerlinNoise
 {
 public:
 	PerlinNoise(bool predictable);
-	float Perlin(float x, float y);
-	float FractalBrownianMotion(float x, float y, int octaves, float persistence);
-	float Remap(float value, float min1, float max1, float min2, float max2);
+	float Perlin(float x, float y) const;
+	float FractalBrownianMotion(float x, float y, int octaves, float persistence) const;
+	static float Remap(float value, float min1, float max1, float min2, float max2);
 private:
 	// Hash lookup table as defined by Ken Perlin.
 	int m_p[256] = {
@@ -46,8 +46,8 @@ private:
 		Grad(-1,0)
 	};
 
-	float PerlinDot(Grad grad, float x, float y);
-	float Lerp(float a, float b, float t);
-	float Fade(float t);
+	static float PerlinDot(const Grad& grad, float x, float y);
+	static float Lerp(float a, float b, float t);
+	static float Fade(float t);
 };
 

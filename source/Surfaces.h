@@ -9,8 +9,8 @@ public:
 	Surfaces();
 	uint32_t* m_textures[NUM_TEXTURES + 1];
 	uint32_t m_minimapColors[NUM_TEXTURES + 1];
-	static uint32_t GetPixel(uint32_t* texels, int x, int y);
-	static int Darken(int color, float amount);
+	static uint32_t GetPixel(const uint32_t* texels, int x, int y);
+	static uint32_t Darken(uint32_t color, float amount);
 private:
 	static uint32_t* LoadPixels(const char* filePath);
 };

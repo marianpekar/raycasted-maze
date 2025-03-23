@@ -1,6 +1,5 @@
 #include <cmath>
 #include <ctime>
-#include <cstdlib>
 #include "Game.h"
 #include <memory>
 
@@ -11,9 +10,12 @@
 #include "Raycaster.h"
 #include "Surfaces.h"
 
-void Game::Setup(unsigned int seed, bool isBot)
+void Game::Setup(const unsigned int seed, const bool isBot)
 {
-    std::srand(seed > 0 ? seed : std::time(0));
+    if (seed > 0U)
+        std::srand(seed);
+    else
+        std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
     Maze::GetRandomTile(m_startX, m_startY);
 
@@ -21,8 +23,8 @@ void Game::Setup(unsigned int seed, bool isBot)
 
     m_player = std::make_shared<Player>();
     m_player->isBot = isBot;
-    m_player->x = m_startY * TILE_SIZE + TILE_SIZE * 0.5;
-    m_player->y = m_startX * TILE_SIZE + TILE_SIZE * 0.5;
+    m_player->x = m_startY * TILE_SIZE + TILE_SIZE * 0.5f;
+    m_player->y = m_startX * TILE_SIZE + TILE_SIZE * 0.5f;
     m_player->width = 1;
     m_player->height = 1;
     m_player->turnDirection = 0;
@@ -39,7 +41,7 @@ void Game::Setup(unsigned int seed, bool isBot)
 
 void Game::Update()
 {
-    const auto deltaTime = (SDL_GetTicks() - m_ticksLastFrame) / 1000.0f;
+    const auto deltaTime = static_cast<float>((SDL_GetTicks() - m_ticksLastFrame)) / 1000.0f;
     m_ticksLastFrame = SDL_GetTicks();
     
     if (m_player->isBot)
@@ -55,7 +57,7 @@ void Game::Update()
     m_raycaster->CastRays(m_player, m_maze, m_rays);
 }
 
-void Game::SimulateMovement(float deltaTime)
+void Game::SimulateMovement(const float deltaTime)
 {
     if (m_currentNode == nullptr)
     {
@@ -79,8 +81,8 @@ void Game::SimulateMovement(float deltaTime)
         return;
     }
     
-    float targetX = nextNode->x * TILE_SIZE + TILE_SIZE * 0.5f;
-    float targetY = nextNode->y * TILE_SIZE + TILE_SIZE * 0.5f;
+    float targetX = TILE_SIZE * static_cast<float>(nextNode->x) + TILE_SIZE * 0.5f;
+    float targetY = TILE_SIZE * static_cast<float>(nextNode->y) + TILE_SIZE * 0.5f;
     float dx = targetX - m_player->x;
     float dy = targetY - m_player->y;
 
@@ -158,7 +160,7 @@ void Game::GatherInput()
     }
 }
 
-void Game::MovePlayer(float deltaTime) const
+void Game::MovePlayer(const float deltaTime) const
 {
     m_player->rotationAngle += m_player->turnDirection * m_player->turnSpeed * deltaTime;
     auto moveStep = m_player->walkDirection * m_player->walkSpeed * deltaTime;
@@ -170,9 +172,4 @@ void Game::MovePlayer(float deltaTime) const
         m_player->x = newPlayerX;
         m_player->y = newPlayerY;
     }
-}
-
-void Game::Delay(float time)
-{
-    SDL_Delay(time);
 }

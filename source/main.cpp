@@ -40,7 +40,6 @@ int main(int argc, char* args[]) {
     while (game->IsRunning()) {    	
         game->Update();
         renderer->Render(game);
-        game->Delay(FRAME_TIME_LENGTH);
     }
     
     return 0;
