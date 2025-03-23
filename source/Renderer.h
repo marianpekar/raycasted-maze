@@ -7,7 +7,7 @@ struct Ray;
 class Node;
 class Maze;
 class Surfaces;
-class Player;
+struct Player;
 
 class Window;
 class Game;

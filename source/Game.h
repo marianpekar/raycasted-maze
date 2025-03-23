@@ -6,7 +6,7 @@
 #include "Ray.h"
 
 struct Node;
-class Player;
+struct Player;
 class Maze;
 class Surfaces;
 class Raycaster;

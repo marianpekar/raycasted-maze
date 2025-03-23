@@ -9,7 +9,7 @@
 
 void Raycaster::CastRays(const std::shared_ptr<Player>& player, const std::shared_ptr<Maze>& maze, Ray rays[NUM_RAYS]) const
 {
-    float rayAngle = player->m_rotationAngle - (FOV_ANGLE / 2);
+    float rayAngle = player->rotationAngle - (FOV_ANGLE / 2);
 
     for (int stripId = 0; stripId < NUM_RAYS; stripId++) {
         CastRay(player, maze, rays, rayAngle, stripId);
@@ -32,10 +32,10 @@ void Raycaster::CastRay(const std::shared_ptr<Player>& player, const std::shared
     auto horizontalWallHitY = 0.0f;
     auto horizontalWallContent = 0;
 
-    float yIntercept = floor(player->m_y / TILE_SIZE) * TILE_SIZE;
+    float yIntercept = floor(player->y / TILE_SIZE) * TILE_SIZE;
     yIntercept += isRayFacingDown ? TILE_SIZE : 0;
 
-    float xIntercept = player->m_x + (yIntercept - player->m_y) / tan(rayAngle);
+    float xIntercept = player->x + (yIntercept - player->y) / tan(rayAngle);
 
     float yStep = TILE_SIZE;
     yStep *= isRayFacingUp ? -1 : 1;
@@ -69,10 +69,10 @@ void Raycaster::CastRay(const std::shared_ptr<Player>& player, const std::shared
     auto verticalWallHitY = 0.0f;
     auto verticalWallContent = 0;
 
-    xIntercept = floor(player->m_x / TILE_SIZE) * TILE_SIZE;
+    xIntercept = floor(player->x / TILE_SIZE) * TILE_SIZE;
     xIntercept += isRayFacingRight ? TILE_SIZE : 0;
 
-    yIntercept = player->m_y + (xIntercept - player->m_x) * tan(rayAngle);
+    yIntercept = player->y + (xIntercept - player->x) * tan(rayAngle);
 
     xStep = TILE_SIZE;
     xStep *= isRayFacingLeft ? -1 : 1;
@@ -102,28 +102,28 @@ void Raycaster::CastRay(const std::shared_ptr<Player>& player, const std::shared
 	    nextVerticalTouchY += yStep;
     }
 
-    const auto horizontalHitDistance = foundHorizontalWallHit ? DistanceBetweenPoints(player->m_x, player->m_y, horizontalWallHitX, horizontalWallHitY) : INT_MAX;
-    const auto verticalHitDistance = foundVerticalWallHit ? DistanceBetweenPoints(player->m_x, player->m_y, verticalWallHitX, verticalWallHitY) : INT_MAX;
+    const auto horizontalHitDistance = foundHorizontalWallHit ? DistanceBetweenPoints(player->x, player->y, horizontalWallHitX, horizontalWallHitY) : INT_MAX;
+    const auto verticalHitDistance = foundVerticalWallHit ? DistanceBetweenPoints(player->x, player->y, verticalWallHitX, verticalWallHitY) : INT_MAX;
 
     if (verticalHitDistance < horizontalHitDistance) {
-        rays[stripId].m_distance = verticalHitDistance;
-        rays[stripId].m_wallHitX = verticalWallHitX;
-        rays[stripId].m_wallHitY = verticalWallHitY;
-        rays[stripId].m_wallHitContent = verticalWallContent;
-        rays[stripId].m_wasHitVertical = true;
+        rays[stripId].distance = verticalHitDistance;
+        rays[stripId].wallHitX = verticalWallHitX;
+        rays[stripId].wallHitY = verticalWallHitY;
+        rays[stripId].wallHitContent = verticalWallContent;
+        rays[stripId].wasHitVertical = true;
     }
     else {
-        rays[stripId].m_distance = horizontalHitDistance;
-        rays[stripId].m_wallHitX = horizontalWallHitX;
-        rays[stripId].m_wallHitY = horizontalWallHitY;
-        rays[stripId].m_wallHitContent = horizontalWallContent;
-        rays[stripId].m_wasHitVertical = false;
+        rays[stripId].distance = horizontalHitDistance;
+        rays[stripId].wallHitX = horizontalWallHitX;
+        rays[stripId].wallHitY = horizontalWallHitY;
+        rays[stripId].wallHitContent = horizontalWallContent;
+        rays[stripId].wasHitVertical = false;
     }
-    rays[stripId].m_rayAngle = rayAngle;
-    rays[stripId].m_isRayFacingDown = isRayFacingDown;
-    rays[stripId].m_isRayFacingUp = isRayFacingUp;
-    rays[stripId].m_isRayFacingLeft = isRayFacingLeft;
-    rays[stripId].m_isRayFacingRight = isRayFacingRight;
+    rays[stripId].rayAngle = rayAngle;
+    rays[stripId].isRayFacingDown = isRayFacingDown;
+    rays[stripId].isRayFacingUp = isRayFacingUp;
+    rays[stripId].isRayFacingLeft = isRayFacingLeft;
+    rays[stripId].isRayFacingRight = isRayFacingRight;
 }
 
 float Raycaster::NormalizeAngle(float angle) const

@@ -5,7 +5,7 @@
 #include "Constants.h"
 
 struct Ray;
-class Player;
+struct Player;
 class Maze;
 
 class Raycaster

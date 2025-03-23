@@ -39,19 +39,19 @@ void Renderer::RenderPlayer(const std::shared_ptr<Player>& player) const
 {
     SDL_SetRenderDrawColor(m_renderer, 255, 255, 255, 255);
     SDL_Rect playerRect = {
-        player->m_x * MINIMAP_SCALE_FACTOR,
-        player->m_y * MINIMAP_SCALE_FACTOR,
-        player->m_width * MINIMAP_SCALE_FACTOR,
-        player->m_height * MINIMAP_SCALE_FACTOR
+        player->x * MINIMAP_SCALE_FACTOR,
+        player->y * MINIMAP_SCALE_FACTOR,
+        player->width * MINIMAP_SCALE_FACTOR,
+        player->height * MINIMAP_SCALE_FACTOR
     };
     SDL_RenderFillRect(m_renderer, &playerRect);
 
     SDL_RenderDrawLine(
         m_renderer,
-        MINIMAP_SCALE_FACTOR * player->m_x,
-        MINIMAP_SCALE_FACTOR * player->m_y,
-        MINIMAP_SCALE_FACTOR * player->m_x + static_cast<float>(cos(player->m_rotationAngle)) * 2,
-        MINIMAP_SCALE_FACTOR * player->m_y + static_cast<float>(sin(player->m_rotationAngle)) * 2
+        MINIMAP_SCALE_FACTOR * player->x,
+        MINIMAP_SCALE_FACTOR * player->y,
+        MINIMAP_SCALE_FACTOR * player->x + static_cast<float>(cos(player->rotationAngle)) * 2,
+        MINIMAP_SCALE_FACTOR * player->y + static_cast<float>(sin(player->rotationAngle)) * 2
     );
 }
 
@@ -86,10 +86,10 @@ void Renderer::RenderRays(const std::shared_ptr<Player>& player, const Ray rays[
     for (auto i = 0; i < NUM_RAYS; i++) {
         SDL_RenderDrawLine(
             m_renderer,
-            MINIMAP_SCALE_FACTOR * player->m_x,
-            MINIMAP_SCALE_FACTOR * player->m_y,
-            MINIMAP_SCALE_FACTOR * rays[i].m_wallHitX,
-            MINIMAP_SCALE_FACTOR * rays[i].m_wallHitY
+            MINIMAP_SCALE_FACTOR * player->x,
+            MINIMAP_SCALE_FACTOR * player->y,
+            MINIMAP_SCALE_FACTOR * rays[i].wallHitX,
+            MINIMAP_SCALE_FACTOR * rays[i].wallHitY
         );
     }
 }
@@ -130,7 +130,7 @@ void Renderer::RenderColorBuffer() const
 void Renderer::RenderProjection(const std::shared_ptr<Player>& player, const Ray rays[], const std::shared_ptr<Surfaces>& surfaces) const
 {
     for (auto i = 0; i < NUM_RAYS; i++) {
-	    const auto perpendicularDistance = rays[i].m_distance * cos(rays[i].m_rayAngle - player->m_rotationAngle);
+	    const auto perpendicularDistance = rays[i].distance * cos(rays[i].rayAngle - player->rotationAngle);
 	    const float distanceToProjectionPlane = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
 	    const float projectedWallHeight = (TILE_SIZE / perpendicularDistance) * distanceToProjectionPlane;
 
@@ -146,9 +146,9 @@ void Renderer::RenderProjection(const std::shared_ptr<Player>& player, const Ray
             m_colorBuffer[(WINDOW_WIDTH * ceilingPixel) + i] = CEILING_COLOR;
         }
 
-        const auto surfaceId = rays[i].m_wallHitContent;
+        const auto surfaceId = rays[i].wallHitContent;
 
-        const auto surfaceOffsetX = rays[i].m_wasHitVertical ? static_cast<int>(rays[i].m_wallHitY) % TILE_SIZE : static_cast<int>(rays[i].m_wallHitX) % TILE_SIZE;;
+        const auto surfaceOffsetX = rays[i].wasHitVertical ? static_cast<int>(rays[i].wallHitY) % TILE_SIZE : static_cast<int>(rays[i].wallHitX) % TILE_SIZE;;
 
         for (auto y = wallTopPixel; y < wallBottomPixel; y++) {
 	        const auto distanceFromTop = (y + (wallStripHeight / 2) - (WINDOW_HEIGHT / 2));
@@ -157,7 +157,7 @@ void Renderer::RenderProjection(const std::shared_ptr<Player>& player, const Ray
 	        const auto texels = surfaces->m_textures[surfaceId];
 	        const auto texel = Surfaces::GetPixel(texels, surfaceOffsetX, surfaceOffetY);
         	
-            auto darkenAmount = rays[i].m_wasHitVertical ? perpendicularDistance * 0.001f : 0.3f + perpendicularDistance * 0.001f;
+            auto darkenAmount = rays[i].wasHitVertical ? perpendicularDistance * 0.001f : 0.3f + perpendicularDistance * 0.001f;
             if (darkenAmount > 0.6f)
                 darkenAmount = 0.6f;
 
