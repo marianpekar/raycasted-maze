@@ -46,19 +46,19 @@ std::shared_ptr<Node> PathFinder::FindPath(const std::shared_ptr<Maze>& maze, in
 
         for (int i = 0; i < 4; ++i)
         {
-            int newRow = currentNode->y + directionsY[i];
-            int newCol = currentNode->x + directionsX[i];
+            int ny = currentNode->y + directionsY[i];
+            int nx = currentNode->x + directionsX[i];
 
-            if (!maze->IsValid(newRow, newCol))
+            if (!maze->IsValid(ny, nx))
                 continue;
 
-            if (maze->m_maze[newRow][newCol])
+            if (maze->GetAt(nx, ny))
                 continue;
 
             bool alreadyClosed = std::ranges::any_of(
                 closed,
-                [newRow, newCol](const std::shared_ptr<Node>& node) {
-                    return (node->x == newCol && node->y == newRow);
+                [ny, nx](const std::shared_ptr<Node>& node) {
+                    return (node->x == nx && node->y == ny);
                 }
             );
             
@@ -66,13 +66,13 @@ std::shared_ptr<Node> PathFinder::FindPath(const std::shared_ptr<Maze>& maze, in
                 continue;
 
             int newG = currentNode->g + 1;
-            int newH = Heuristic(newCol, newRow, tx, ty);
+            int newH = Heuristic(nx, ny, tx, ty);
             int newF = newG + newH;
 
             auto itOpen = std::ranges::find_if(
                 open,
-                [newRow, newCol](const std::shared_ptr<Node>& node) {
-                    return (node->x == newCol && node->y == newRow);
+                [ny, nx](const std::shared_ptr<Node>& node) {
+                    return (node->x == nx && node->y == ny);
                 }
             );
 
@@ -83,8 +83,8 @@ std::shared_ptr<Node> PathFinder::FindPath(const std::shared_ptr<Maze>& maze, in
                 }
 
                 auto neighbor = std::make_shared<Node>(Node{
-                    newCol,
-                    newRow,
+                    nx,
+                    ny,
                     newG,
                     newH,
                     newF,
@@ -98,7 +98,7 @@ std::shared_ptr<Node> PathFinder::FindPath(const std::shared_ptr<Maze>& maze, in
     return {};
 }
 
-std::shared_ptr<Node> PathFinder::SimplifyPath(std::shared_ptr<Node> node)
+std::shared_ptr<Node> PathFinder::SimplifyPath(const std::shared_ptr<Node>& node)
 {
     std::vector<std::shared_ptr<Node>> fullPath;
     for (auto current = node; current; current = current->parent)

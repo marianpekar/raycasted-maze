@@ -47,14 +47,16 @@ void Raycaster::CastRay(const std::shared_ptr<Player>& player, const std::shared
     auto nextHorizontalTouchX = xIntercept;
     auto nextHorizontalTouchY = yIntercept;
 
-    while (nextHorizontalTouchX >= 0 && nextHorizontalTouchX <= MAZE_NUM_COLS * TILE_SIZE && nextHorizontalTouchY >= 0 && nextHorizontalTouchY <= MAZE_NUM_ROWS * TILE_SIZE) {
+    while (nextHorizontalTouchX >= 0 && nextHorizontalTouchX <= MAZE_WIDTH * TILE_SIZE && nextHorizontalTouchY >= 0 && nextHorizontalTouchY <= MAZE_HEIGHT * TILE_SIZE) {
         auto xToCheck = nextHorizontalTouchX;
         auto yToCheck = nextHorizontalTouchY + (isRayFacingUp ? -1 : 0);
 
         if (maze->HasWallAt(xToCheck, yToCheck)) {
             horizontalWallHitX = nextHorizontalTouchX;
             horizontalWallHitY = nextHorizontalTouchY;
-            horizontalWallContent = maze->m_maze[static_cast<int>(floor(yToCheck / TILE_SIZE))][static_cast<int>(floor(xToCheck / TILE_SIZE))];
+            horizontalWallContent = maze->GetAt(
+                static_cast<int>(floor(xToCheck / TILE_SIZE)),
+                static_cast<int>(floor(yToCheck / TILE_SIZE)));
             foundHorizontalWallHit = true;
             break;
         }
@@ -82,7 +84,7 @@ void Raycaster::CastRay(const std::shared_ptr<Player>& player, const std::shared
     auto nextVerticalTouchX = xIntercept;
     auto nextVerticalTouchY = yIntercept;
 
-    while (nextVerticalTouchX >= 0 && nextVerticalTouchX <= MAZE_NUM_COLS * TILE_SIZE && nextVerticalTouchY >= 0 && nextVerticalTouchY <= MAZE_NUM_ROWS * TILE_SIZE) {
+    while (nextVerticalTouchX >= 0 && nextVerticalTouchX <= MAZE_WIDTH * TILE_SIZE && nextVerticalTouchY >= 0 && nextVerticalTouchY <= MAZE_HEIGHT * TILE_SIZE) {
 	    const auto xToCheck = nextVerticalTouchX + (isRayFacingLeft ? -1 : 0);
 	    const auto yToCheck = nextVerticalTouchY;
 
@@ -90,7 +92,9 @@ void Raycaster::CastRay(const std::shared_ptr<Player>& player, const std::shared
             // found a wall hit
             verticalWallHitX = nextVerticalTouchX;
             verticalWallHitY = nextVerticalTouchY;
-            verticalWallContent = maze->m_maze[static_cast<int>(floor(yToCheck / TILE_SIZE))][static_cast<int>(floor(xToCheck / TILE_SIZE))];
+            verticalWallContent = maze->GetAt(
+                static_cast<int>(floor(xToCheck / TILE_SIZE)),
+                static_cast<int>(floor(yToCheck / TILE_SIZE)));
             foundVerticalWallHit = true;
             break;
         }

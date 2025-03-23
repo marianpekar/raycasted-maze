@@ -12,17 +12,18 @@ public:
 	bool IsValid(int x, int y);
 	void TileFromPosition(float x, float y, int& tileX, int& tileY) const;
 	Maze(int startX, int startY);
-	int m_maze[MAZE_NUM_COLS][MAZE_NUM_ROWS];
 	int HasWallAt(float x, float y);
 	static void GetRandomTile(float& x, float& y);
 	void GetRandomOpenLocation(float& x, float& y);
+	int GetAt(int x, int y) const;
+	void SetAt(int x, int y, int val);
 private:
-	int m_startX;
-	int m_startY;
+	int data[MAZE_WIDTH * MAZE_HEIGHT];
+	int m_startX, m_startY;
 	std::shared_ptr<PerlinNoise> m_perlinNoise;
 	void GenerateMaze();
-	void Dig(int row, int column);
+	void Dig(int x, int y);
 	void PaintWalls();
-	void PaintWall(int row, int column);
+	void PaintWall(int x, int y);
 };
 

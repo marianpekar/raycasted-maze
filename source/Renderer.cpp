@@ -57,12 +57,12 @@ void Renderer::RenderPlayer(const std::shared_ptr<Player>& player) const
 
 void Renderer::RenderMinimap(const std::shared_ptr<Maze>& maze, const std::shared_ptr<Surfaces>& surfaces) const
 {
-    for (int i = 0; i < MAZE_NUM_ROWS; i++) {
-        for (int j = 0; j < MAZE_NUM_COLS; j++) {
+    for (int i = 0; i < MAZE_HEIGHT; i++) {
+        for (int j = 0; j < MAZE_WIDTH; j++) {
             int tileX = j * TILE_SIZE;
             int tileY = i * TILE_SIZE;
 
-            uint32_t tileColor = surfaces->m_minimapColors[maze->m_maze[i][j]];
+            uint32_t tileColor = surfaces->m_minimapColors[maze->GetAt(j,i)];
 
             uint8_t r = (tileColor >> 16) & 0xFF;
             uint8_t g = (tileColor >> 8) & 0xFF;

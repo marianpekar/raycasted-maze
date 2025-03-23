@@ -5,7 +5,7 @@
 
 bool Maze::IsValid(int x, int y)
 {
-    return x >= 0 && x <= MAZE_NUM_COLS * TILE_SIZE && y >= 0 && y <= MAZE_NUM_ROWS * TILE_SIZE;
+    return x >= 0 && x <= MAZE_WIDTH * TILE_SIZE && y >= 0 && y <= MAZE_HEIGHT * TILE_SIZE;
 }
 
 void Maze::TileFromPosition(float x, float y, int& tileX, int& tileY) const
@@ -22,35 +22,45 @@ Maze::Maze(int startX, int startY) : m_startX(startX), m_startY(startY)
 
 int Maze::HasWallAt(float x, float y)
 {
-    if (x < 0 || x > MAZE_NUM_COLS * TILE_SIZE || y < 0 || y > MAZE_NUM_ROWS * TILE_SIZE) {
+    if (x < 0 || x > MAZE_WIDTH * TILE_SIZE || y < 0 || y > MAZE_HEIGHT * TILE_SIZE) {
         return true;
     }
     
     const int mapGridIndexX = std::floor(x / TILE_SIZE);
     const int mapGridIndexY = std::floor(y / TILE_SIZE);
-    return m_maze[mapGridIndexY][mapGridIndexX] != 0;
+    return GetAt(mapGridIndexX, mapGridIndexY) != 0;
 }
 
 void Maze::GetRandomTile(float& x, float& y)
 {
-    x = 1 + std::rand() % (MAZE_NUM_ROWS - 2);
-    y = 1 + std::rand() % (MAZE_NUM_COLS - 2);
+    x = 1 + std::rand() % (MAZE_HEIGHT - 2);
+    y = 1 + std::rand() % (MAZE_WIDTH - 2);
 }
 
 void Maze::GetRandomOpenLocation(float& x, float& y)
 {
     do {
-        x = 1 + std::rand() % (MAZE_NUM_ROWS - 2) * TILE_SIZE + 1;
-        y = 1 + std::rand() % (MAZE_NUM_COLS - 2) * TILE_SIZE + 1;
+        x = 1 + std::rand() % (MAZE_HEIGHT - 2) * TILE_SIZE + 1;
+        y = 1 + std::rand() % (MAZE_WIDTH - 2) * TILE_SIZE + 1;
     }
     while (HasWallAt(x, y));
 }
 
+int Maze::GetAt(int x, int y) const
+{
+    return data[x + y * MAZE_HEIGHT];
+}
+
+void Maze::SetAt(int x, int y, int val)
+{
+    data[x + y * MAZE_HEIGHT] = val;
+}
+
 void Maze::GenerateMaze()
 {
-	for (auto x = 0; x < MAZE_NUM_COLS; x++) {
-        for (auto y = 0; y < MAZE_NUM_ROWS; y++) {
-            m_maze[x][y] = (x == m_startX && y == m_startY) ? 0 : 1;
+	for (auto x = 0; x < MAZE_WIDTH; x++) {
+        for (auto y = 0; y < MAZE_HEIGHT; y++) {
+            SetAt(x, y, (x == m_startX && y == m_startY) ? 0 : 1);
         }
     }
 
@@ -58,7 +68,7 @@ void Maze::GenerateMaze()
     PaintWalls();
 }
 
-void Maze::Dig(int row, int column)
+void Maze::Dig(int y, int x)
 {
     int directions[4]{};
     for (int d = 0; d < 4; d++) {
@@ -69,46 +79,46 @@ void Maze::Dig(int row, int column)
         switch (directions[i])
         {
         case 0: // Up
-            if (row - 2 <= 0)
+            if (y - 2 <= 0)
                 continue;
 
-            if (m_maze[row - 2][column] != 0) {
-                m_maze[row - 2][column] = 0;
-                m_maze[row - 1][column] = 0;
-                Dig(row - 2, column);
+            if (GetAt(x, y - 2) != 0) {
+                SetAt(x, y - 2, 0);
+                SetAt(x, y - 1, 0);
+                Dig(y - 2, x);
             }
             break;
 
         case 1: // Right
-            if (column + 2 >= MAZE_NUM_COLS - 1)
+            if (x + 2 >= MAZE_WIDTH - 1)
                 continue;
 
-            if (m_maze[row][column + 2] != 0) {
-                m_maze[row][column + 2] = 0;
-                m_maze[row][column + 1] = 0;
-                Dig(row, column + 2);
+            if (GetAt(x + 2, y) != 0) {
+                SetAt(x + 2, y, 0);
+                SetAt(x + 1, y, 0);
+                Dig(y, x + 2);
             }
             break;
 
         case 2: // Down
-            if (row + 2 >= MAZE_NUM_ROWS - 1)
+            if (y + 2 >= MAZE_HEIGHT - 1)
                 continue;
 
-            if (m_maze[row + 2][column] != 0) {
-                m_maze[row + 2][column] = 0;
-                m_maze[row + 1][column] = 0;
-                Dig(row + 2, column);
+            if (GetAt(x, y + 2) != 0) {
+                SetAt(x, y + 2, 0);
+                SetAt(x, y + 1, 0);
+                Dig(y + 2, x);
             }
             break;
 
         case 3: // Left
-            if (column - 2 <= 0)
+            if (x - 2 <= 0)
                 continue;
 
-            if (m_maze[row][column - 2] != 0) {
-                m_maze[row][column - 2] = 0;
-                m_maze[row][column - 1] = 0;
-                Dig(row, column - 2);
+            if (GetAt(x - 2, y) != 0) {
+                SetAt(x - 2, y, 0);
+                SetAt(x - 1, y, 0);
+                Dig(y, x - 2);
             }
             break;
         }
@@ -117,19 +127,19 @@ void Maze::Dig(int row, int column)
 
 void Maze::PaintWalls()
 {
-    for (auto x = 0; x < MAZE_NUM_COLS; x++) {
-        for (auto y = 0; y < MAZE_NUM_ROWS; y++) {
-            if (m_maze[x][y] != 0)
+    for (auto x = 0; x < MAZE_WIDTH; x++) {
+        for (auto y = 0; y < MAZE_HEIGHT; y++) {
+            if (GetAt(x, y) != 0)
                 PaintWall(x, y);      	
         }
     }
 }
 
-void Maze::PaintWall(int row, int column)
+void Maze::PaintWall(int x, int y)
 {	
-    auto noiseSample = m_perlinNoise->FractalBrownianMotion(row * FBM_X_SCALE, column * FBM_Y_SCALE, FBM_OCTAVES, FBM_PERSISTENCE);
+    auto noiseSample = m_perlinNoise->FractalBrownianMotion(y * FBM_X_SCALE, x * FBM_Y_SCALE, FBM_OCTAVES, FBM_PERSISTENCE);
     auto noiseRemaped = m_perlinNoise->Remap(noiseSample, -0.33f, 0.33f, 1.0f, NUM_TEXTURES + 1);
     auto textureId = static_cast<int>(floor(noiseRemaped));
-	
-    m_maze[row][column] = textureId;
+
+    SetAt(x, y, textureId);
 }
