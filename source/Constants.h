@@ -4,8 +4,8 @@ constexpr auto PI = 3.14159265f;
 constexpr auto TWO_PI = 6.28318530f;
 
 constexpr auto TILE_SIZE = 64.f;
-constexpr auto MAZE_HEIGHT = 64;
-constexpr auto MAZE_WIDTH = 64;
+constexpr auto MAZE_HEIGHT = 65;
+constexpr auto MAZE_WIDTH = 65;
 constexpr auto NUM_TEXTURES = 8;
 
 constexpr auto PLAYER_WALK_SPEED = 150;
