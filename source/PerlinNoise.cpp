@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "PerlinNoise.h"
 
 PerlinNoise::PerlinNoise(const bool predictable)

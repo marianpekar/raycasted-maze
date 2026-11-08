@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cmath>
+
 #include "Maze.h"
 #include "PerlinNoise.h"
 

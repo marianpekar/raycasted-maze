@@ -1,8 +1,8 @@
 #include <cmath>
-#include "Raycaster.h"
-
+#include <climits>
 #include <memory>
 
+#include "Raycaster.h"
 #include "Player.h"
 #include "Maze.h"
 #include "Ray.h"
